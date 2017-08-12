@@ -28,7 +28,7 @@ class Article
     private $name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=3000)
      * @JMS\Groups("list")
      */
     private $content;
