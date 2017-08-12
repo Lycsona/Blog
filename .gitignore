@@ -1,5 +1,5 @@
-./Homestead.yaml
-./Vagrantfile
+/Homestead.yaml
+/Vagrantfile
 /vendor
 .idea
 /blog-server/app/sqlite.db.cache
