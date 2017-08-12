@@ -1,0 +1,6 @@
+# src/App/BlogBundle/Resources/config/routing.yml
+#AppBlogBundle_example:
+#    path:     /
+#    defaults: { _controller: "AppBlogBundle:Example:index" }
+#    requirements:
+#         methods:  GET
