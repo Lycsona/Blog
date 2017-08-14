@@ -2,10 +2,11 @@
 
     <div class="row m-b-2">
         <div *ngIf="articles.length !== 0">
-            <div  *ngFor="let article of articles"
+            <div *ngFor="let article of articles"
                  class="panel panel-default col-md-6 col-sm-9 col-xs-10 center-block float-none cursor-hand">
                 <!--<div class="panel-body article-block" [routerLink]="['/article', articles[key].art.id]"-->
-                <div class="panel-body article-block">
+                <div class="panel-body article-block"
+                     [routerLink]="['/article', article.id]">
                     <h3 class="text-center text-uppercase article-title">{{article.name}}</h3>
                     <div class="text-center small p-b-1">
 
