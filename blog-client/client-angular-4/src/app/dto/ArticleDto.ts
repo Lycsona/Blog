@@ -3,10 +3,10 @@ export class ArticleDto {
     private _name?: string;
     private _content?: string;
 
-    constructor(id: number, name: string, content: string) {
-        this._id = id;
-        this._name = name;
-        this._content = content;
+    constructor() {
+        this._id = 0;
+        this._name = '';
+        this._content = '';
     }
 
     get id(): number {
