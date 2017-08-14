@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { AppState } from '../app.service';
-import { Title } from '@angular/platform-browser';
-import { ArticleDto } from '../dto/ArticleDto';
-import { AppArticleService } from '../service/app.article.service';
-import { CommonUtil } from '../utils/common.util';
+import {AppState} from '../app.service';
+import {Title} from '@angular/platform-browser';
+import {ArticleDto} from '../dto/ArticleDto';
+import {AppArticleService} from '../service/app.article.service';
+import {CommonUtil} from '../utils/common.util';
 
 @Component({
     selector: 'home',
@@ -32,7 +32,10 @@ export class HomeComponent implements OnInit {
                 let jsonArray = JSON.parse(res._body);
 
                 jsonArray.map((art) => {
-                    let article = new ArticleDto(art.id, art.name, art.content);
+                    let article = new ArticleDto();
+                    article.id = art.id;
+                    article.name = art.name;
+                    article.content = art.content;
 
                     this.articles.push(article);
                 });
