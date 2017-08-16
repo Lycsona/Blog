@@ -2,6 +2,7 @@
 
 namespace App\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,6 +33,20 @@ class Article
      * @JMS\Groups("list")
      */
     private $content;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="tag", inversedBy="articles")
+     * @ORM\JoinTable(name="article_tag",
+     *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      )
+     */
+    private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -79,5 +94,32 @@ class Article
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param Tag $tags
+     * @return Tag
+     */
+    public function addTag(Tag $tags)
+    {
+        if (!$this->tags->contains($tags))
+        {
+            $this->tags[] = $tags;
+            $tags->addArticle($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param Tag $tags
+     */
+    public function removeTag(Tag $tags)
+    {
+        $this->tags->removeElement($tags);
     }
 }
