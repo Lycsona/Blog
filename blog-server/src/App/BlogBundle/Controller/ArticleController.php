@@ -2,6 +2,8 @@
 
 namespace App\BlogBundle\Controller;
 
+use App\BlogBundle\AppBlogBundleEvents;
+use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\DTO\ArticleDTO;
@@ -70,7 +72,10 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
         }
 
         $entityJson = $this->get('serializer')->serialize(
@@ -150,7 +155,10 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
         }
 
         $form = $this->createForm(ArticleType::class, $entity, array('method' => 'PUT'));
@@ -193,7 +201,11 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
         }
 
         $entityManager->remove($entity);
@@ -203,19 +215,6 @@ class ArticleController extends Controller
             'message' => sprintf('Article deleted.'),
             Response::HTTP_OK]);
 
-    }
-
-    /**
-     * Entity isn't exist.
-     *
-     * @param $id
-     * @return JsonResponse
-     */
-    private function nonExistentEntity($id)
-    {
-        return JsonResponse::create([
-            'messages' => sprintf('There is no Article with id %s', $id),
-            Response::HTTP_NOT_FOUND]);
     }
 
     /**
