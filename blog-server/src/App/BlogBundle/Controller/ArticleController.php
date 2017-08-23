@@ -48,46 +48,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Creates a new Article entity.
-     *
-     * @ApiDoc(
-     *   section="Article",
-     *   resource = true,
-     *   input = {
-     *      "class" = "App\BlogBundle\Form\ArticleType"
-     *   },
-     *   statusCodes = {
-     *     201 = "Returned when successful",
-     *     400 = "Returned when bed request"
-     *   },
-     * )
-     *
-     * @Route("api/articles", name="create_article")
-     * @Method({"POST"})
-     *
-     * @return JsonResponse
-     */
-    public function createArticleAction(Request $request)
-    {
-        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
-
-        $form = $this->createForm(ArticleType::class, $articleDTO);
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($articleDTO);
-            $entityManager->flush();
-
-            return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
-        }
-
-        return JsonResponse::create([
-            'message' => sprintf('Error saving.'),
-            'errors' => $this->getErrorsAsArray($form)
-        ], Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
      * Finds Article entity by id.
      *
      * @ApiDoc(
@@ -119,6 +79,46 @@ class ArticleController extends Controller
         );
 
         return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+    }
+
+    /**
+     * Creates a new Article entity.
+     *
+     * @ApiDoc(
+     *   section="Article",
+     *   resource = true,
+     *   input = {
+     *      "class" = "App\BlogBundle\Form\ArticleType"
+     *   },
+     *   statusCodes = {
+     *     201 = "Returned when successful",
+     *     400 = "Returned when bed request"
+     *   },
+     * )
+     *
+     * @Route("api/articles", name="create_article")
+     * @Method({"POST"})
+     *
+     * @return JsonResponse
+     */
+    public function createArticleAction(Request $request)
+    {
+        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
+
+        $form = $this->createForm(ArticleType::class, $articleDTO);
+        $form->handleRequest($request);
+        if (!$form->isSubmitted()) {
+            return JsonResponse::create([
+                'message' => sprintf('Error saving.'),
+                'errors' => $this->getErrorsAsArray($form)
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($articleDTO);
+        $entityManager->flush();
+
+        return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
     }
 
     /**
