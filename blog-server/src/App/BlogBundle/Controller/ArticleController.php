@@ -2,6 +2,8 @@
 
 namespace App\BlogBundle\Controller;
 
+use App\BlogBundle\AppBlogBundleEvents;
+use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\DTO\ArticleDTO;
@@ -48,6 +50,43 @@ class ArticleController extends Controller
     }
 
     /**
+     * Finds Article entity by id.
+     *
+     * @ApiDoc(
+     *   section = "Article",
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when such entry not found"
+     *   }
+     * )
+     * @Method("GET")
+     * @Route("api/articles/{id}", name="get_article")
+     * @param int $id
+     *
+     * @return JsonResponse
+     */
+    public function getArticleByIdAction($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entity = $entityManager->getRepository(Article::class)->find($id);
+        if (!$entity) {
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+        }
+
+        $entityJson = $this->get('serializer')->serialize(
+            $entity,
+            'json'
+        );
+
+        return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+    }
+
+    /**
      * Creates a new Article entity.
      *
      * @ApiDoc(
@@ -73,52 +112,18 @@ class ArticleController extends Controller
 
         $form = $this->createForm(ArticleType::class, $articleDTO);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($articleDTO);
-            $entityManager->flush();
-
-            return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
+        if (!$form->isSubmitted()) {
+            return JsonResponse::create([
+                'message' => sprintf('Error saving.'),
+                'errors' => $this->getErrorsAsArray($form)
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        return JsonResponse::create([
-            'message' => sprintf('Error saving.'),
-            'errors' => $this->getErrorsAsArray($form)
-        ], Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
-     * Finds Article entity by id.
-     *
-     * @ApiDoc(
-     *   section = "Article",
-     *   resource = true,
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when such entry not found"
-     *   }
-     * )
-     * @Method("GET")
-     * @Route("api/articles/{id}", name="get_article")
-     * @param int $id
-     *
-     * @return JsonResponse
-     */
-    public function getArticleByIdAction($id)
-    {
         $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($articleDTO);
+        $entityManager->flush();
 
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            return $this->nonExistentEntity($id);
-        }
-
-        $entityJson = $this->get('serializer')->serialize(
-            $entity,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+        return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
     }
 
     /**
@@ -150,7 +155,10 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
         }
 
         $form = $this->createForm(ArticleType::class, $entity, array('method' => 'PUT'));
@@ -193,7 +201,11 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
         }
 
         $entityManager->remove($entity);
@@ -203,19 +215,6 @@ class ArticleController extends Controller
             'message' => sprintf('Article deleted.'),
             Response::HTTP_OK]);
 
-    }
-
-    /**
-     * Entity isn't exist.
-     *
-     * @param $id
-     * @return JsonResponse
-     */
-    private function nonExistentEntity($id)
-    {
-        return JsonResponse::create([
-            'messages' => sprintf('There is no Article with id %s', $id),
-            Response::HTTP_NOT_FOUND]);
     }
 
     /**

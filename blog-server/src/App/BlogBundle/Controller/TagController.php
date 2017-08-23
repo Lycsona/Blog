@@ -48,46 +48,6 @@ class TagController extends Controller
     }
 
     /**
-     * Creates a new Tag entity.
-     *
-     * @ApiDoc(
-     *   section="Tag",
-     *   resource = true,
-     *   input = {
-     *      "class" = "App\BlogBundle\Form\TagType"
-     *   },
-     *   statusCodes = {
-     *     201 = "Returned when successful",
-     *     400 = "Returned when bed request"
-     *   },
-     * )
-     *
-     * @Route("api/tags", name="create_tag")
-     * @Method({"POST"})
-     *
-     * @return JsonResponse
-     */
-    public function createTagAction(Request $request)
-    {
-        $tagDTO = ModelFactory::createTag(new TagDTO());
-
-        $form = $this->createForm(TagType::class, $tagDTO);
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($tagDTO);
-            $entityManager->flush();
-
-            return JsonResponse::create(['message' => sprintf('Tag created.')], Response::HTTP_CREATED);
-        }
-
-        return JsonResponse::create([
-            'message' => sprintf('Error saving.'),
-            'errors' => $this->getErrorsAsArray($form)
-        ], Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
      * Finds Tag entity by id.
      *
      * @ApiDoc(
@@ -119,6 +79,46 @@ class TagController extends Controller
         );
 
         return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+    }
+
+    /**
+     * Creates a new Tag entity.
+     *
+     * @ApiDoc(
+     *   section="Tag",
+     *   resource = true,
+     *   input = {
+     *      "class" = "App\BlogBundle\Form\TagType"
+     *   },
+     *   statusCodes = {
+     *     201 = "Returned when successful",
+     *     400 = "Returned when bed request"
+     *   },
+     * )
+     *
+     * @Route("api/tags", name="create_tag")
+     * @Method({"POST"})
+     *
+     * @return JsonResponse
+     */
+    public function createTagAction(Request $request)
+    {
+        $tagDTO = ModelFactory::createTag(new TagDTO());
+
+        $form = $this->createForm(TagType::class, $tagDTO);
+        $form->handleRequest($request);
+        if (!$form->isSubmitted()) {
+            return JsonResponse::create([
+                'message' => sprintf('Error saving.'),
+                'errors' => $this->getErrorsAsArray($form)
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($tagDTO);
+        $entityManager->flush();
+
+        return JsonResponse::create(['message' => sprintf('Tag created.')], Response::HTTP_CREATED);
     }
 
     /**
