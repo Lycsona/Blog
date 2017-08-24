@@ -20,8 +20,8 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('content', TextareaType::class);
-
+            ->add('content', TextareaType::class)
+            ->add('tags');
     }
 
     /**
