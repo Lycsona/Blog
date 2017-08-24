@@ -38,6 +38,9 @@ export class ArticleComponent implements OnInit {
                     this.article.id = jsonArticle.id;
                     this.article.name = jsonArticle.name;
                     this.article.content = jsonArticle.content;
+                    this.article.createdAt = jsonArticle.createdAt;
+                    this.article.updatedAt = jsonArticle.updatedAt;
+                    this.article.tags = jsonArticle.tags;
 
                 }, CommonUtil.handleError)
         }).catch((error) => console.error(error));

@@ -36,6 +36,9 @@ export class HomeComponent implements OnInit {
                     article.id = art.id;
                     article.name = art.name;
                     article.content = art.content;
+                    article.createdAt = art.createdAt;
+                    article.updatedAt = art.updatedAt;
+                    article.tags = art.tags;
 
                     this.articles.push(article);
                 });

@@ -5,6 +5,7 @@ namespace App\BlogBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ORM\Entity(repositoryClass="App\BlogBundle\Repository\ArticleRepository")
@@ -35,6 +36,20 @@ class Article
     private $content;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    private $updatedAt;
+
+    /**
      * @ORM\ManyToMany(targetEntity="tag", inversedBy="articles")
      * @ORM\JoinTable(name="article_tag",
      *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
@@ -46,6 +61,7 @@ class Article
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->createdAt = date_create('now');
     }
 
     /**
@@ -97,6 +113,39 @@ class Article
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     *
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
      * Add tags
      *
      * @param Tag $tags
@@ -104,8 +153,7 @@ class Article
      */
     public function addTag(Tag $tags)
     {
-        if (!$this->tags->contains($tags))
-        {
+        if (!$this->tags->contains($tags)) {
             $this->tags[] = $tags;
             $tags->addArticle($this);
         }
@@ -121,5 +169,21 @@ class Article
     public function removeTag(Tag $tags)
     {
         $this->tags->removeElement($tags);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param mixed $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
     }
 }
