@@ -20,9 +20,19 @@ class ArticleDTO
     private $content;
 
     /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
      * @var Tag
      */
-    private $tag;
+    private $tags;
 
     /**
      * @return mixed
@@ -57,18 +67,60 @@ class ArticleDTO
     }
 
     /**
-     * @return Tag
+     * @return \DateTime
      */
-    public function getTag()
+    public function getCreatedAt()
     {
-        return $this->tag;
+        return $this->createdAt;
     }
 
     /**
-     * @param Tag $tag
+     * @param \DateTime $createdAt
      */
-    public function setTag($tag)
+    public function setCreatedAt($createdAt)
     {
-        $this->tag = $tag;
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param Tag $tags
+     * @return Tag
+     */
+    public function addTag(Tag $tags)
+    {
+        if (!$this->tags->contains($tags)) {
+            $this->tags[] = $tags;
+            $tags->addArticle($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param Tag $tags
+     */
+    public function removeTag(Tag $tags)
+    {
+        $this->tags->removeElement($tags);
     }
 }
