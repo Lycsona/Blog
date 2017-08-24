@@ -8,7 +8,6 @@ use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,9 +72,10 @@ class ArticleController extends Controller
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
             $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
-
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
             $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $entityJson = $this->get('serializer')->serialize(
@@ -114,10 +114,11 @@ class ArticleController extends Controller
         $form = $this->createForm(ArticleType::class, $articleDTO);
         $form->handleRequest($request);
         if (!$form->isSubmitted()) {
-            return JsonResponse::create([
-                'message' => sprintf('Error saving.'),
-                'errors' => $this->getErrorsAsArray($form)
-            ], Response::HTTP_BAD_REQUEST);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
+            $dispatcher->dispatch(AppBlogBundleEvents::CREATE_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -153,23 +154,25 @@ class ArticleController extends Controller
     public function editArticleAction(Request $request, $id)
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $dispatcher = $this->get('event_dispatcher');
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
-
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
             $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $form = $this->createForm(ArticleType::class, $entity, array('method' => 'PUT'));
         $form->handleRequest($request);
         if (!$form->isSubmitted()) {
-            return JsonResponse::create([
-                'message' => sprintf('Error updating.'),
-                'errors' => $this->getErrorsAsArray($form)
-            ], Response::HTTP_BAD_REQUEST);
+            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
+            $dispatcher->dispatch(AppBlogBundleEvents::UPDATE_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
+
         $entityManager->persist($entity);
         $entityManager->flush();
 
@@ -202,11 +205,11 @@ class ArticleController extends Controller
 
         $entity = $entityManager->getRepository(Article::class)->find($id);
         if (!$entity) {
-
             $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent($id, Response::HTTP_NOT_FOUND);
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
+            $dispatcher->dispatch(AppBlogBundleEvents::DELETE_ENTITY_ERROR, $event);
 
-            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+            return $event->getResponse();
         }
 
         $entityManager->remove($entity);
@@ -216,28 +219,5 @@ class ArticleController extends Controller
             'message' => sprintf('Article deleted.'),
             Response::HTTP_OK]);
 
-    }
-
-    /**
-     * Get error array.
-     *
-     * @param Form $form
-     * @return array
-     */
-    private function getErrorsAsArray(Form $form)
-    {
-        $errors = array();
-
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
-        }
-
-        foreach ($form->all() as $key => $child) {
-            if ($err = $this->getErrorsAsArray($child)) {
-                $errors[$key] = $err;
-            }
-        }
-
-        return $errors;
     }
 }

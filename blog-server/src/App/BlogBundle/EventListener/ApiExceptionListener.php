@@ -12,7 +12,10 @@ class ApiExceptionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AppBlogBundleEvents::GET_ENTITY_ERROR => 'getEntity'
+            AppBlogBundleEvents::GET_ENTITY_ERROR => 'getEntity',
+            AppBlogBundleEvents::CREATE_ENTITY_ERROR => 'createEntity',
+            AppBlogBundleEvents::UPDATE_ENTITY_ERROR => 'createEntity',
+            AppBlogBundleEvents::DELETE_ENTITY_ERROR => 'getEntity',
         ];
     }
 
@@ -21,6 +24,16 @@ class ApiExceptionListener implements EventSubscriberInterface
         $id = $event->getId();
         $statusCode = $event->getStatusCode();
 
-        echo JsonResponse::fromJsonString(sprintf('There is no entity with id ' . $id), $statusCode);
+        $event->setResponse(JsonResponse::fromJsonString(sprintf('There is no entity with id ' . $id), $statusCode));
+    }
+
+    public function createEntity(ApiExceptionEvent $event)
+    {
+        $errors = $event->getFormErrors($event->getForm());
+        $statusCode = $event->getStatusCode();
+
+        $event->setResponse(JsonResponse::create([
+            'errors' => $errors
+        ], $statusCode));
     }
 }
