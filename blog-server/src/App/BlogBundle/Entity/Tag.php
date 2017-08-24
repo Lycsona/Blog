@@ -29,6 +29,20 @@ class Tag
     private $name;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    private $updatedAt;
+
+    /**
      * @ORM\ManyToMany(targetEntity="article", mappedBy="tags")
      */
     private $articles;
@@ -36,6 +50,7 @@ class Tag
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->createdAt = date_create('now');
     }
 
     /**
@@ -71,6 +86,38 @@ class Tag
     }
 
     /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
      * Add articles
      *
      * @param Article $articles
@@ -78,8 +125,7 @@ class Tag
      */
     public function addArticle(Article $articles)
     {
-        if (!$this->articles->contains($articles))
-        {
+        if (!$this->articles->contains($articles)) {
             $this->articles[] = $articles;
             $articles->addTag($this);
         }
