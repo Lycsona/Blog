@@ -104,6 +104,7 @@ class ArticleController extends Controller
      * @Route("api/articles", name="create_article")
      * @Method({"POST"})
      *
+     * @param Request $request
      * @return JsonResponse
      */
     public function createArticleAction(Request $request)

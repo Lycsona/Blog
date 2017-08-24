@@ -104,6 +104,7 @@ class TagController extends Controller
      * @Route("api/tags", name="create_tag")
      * @Method({"POST"})
      *
+     * @param Request $request
      * @return JsonResponse
      */
     public function createTagAction(Request $request)
