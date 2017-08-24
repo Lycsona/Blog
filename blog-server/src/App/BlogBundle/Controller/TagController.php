@@ -2,11 +2,12 @@
 
 namespace App\BlogBundle\Controller;
 
+use App\BlogBundle\AppBlogBundleEvents;
 use App\BlogBundle\DTO\TagDTO;
 use App\BlogBundle\Entity\Tag;
+use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\TagType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +71,11 @@ class TagController extends Controller
 
         $entity = $entityManager->getRepository(Tag::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $entityJson = $this->get('serializer')->serialize(
@@ -99,6 +104,7 @@ class TagController extends Controller
      * @Route("api/tags", name="create_tag")
      * @Method({"POST"})
      *
+     * @param Request $request
      * @return JsonResponse
      */
     public function createTagAction(Request $request)
@@ -108,10 +114,11 @@ class TagController extends Controller
         $form = $this->createForm(TagType::class, $tagDTO);
         $form->handleRequest($request);
         if (!$form->isSubmitted()) {
-            return JsonResponse::create([
-                'message' => sprintf('Error saving.'),
-                'errors' => $this->getErrorsAsArray($form)
-            ], Response::HTTP_BAD_REQUEST);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
+            $dispatcher->dispatch(AppBlogBundleEvents::CREATE_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -147,20 +154,25 @@ class TagController extends Controller
     public function editTagAction(Request $request, $id)
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $dispatcher = $this->get('event_dispatcher');
 
         $entity = $entityManager->getRepository(Tag::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
+            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $form = $this->createForm(TagType::class, $entity, array('method' => 'PUT'));
         $form->handleRequest($request);
         if (!$form->isSubmitted()) {
-            return JsonResponse::create([
-                'message' => sprintf('Error updating.'),
-                'errors' => $this->getErrorsAsArray($form)
-            ], Response::HTTP_BAD_REQUEST);
+            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
+            $dispatcher->dispatch(AppBlogBundleEvents::UPDATE_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
+
         $entityManager->persist($entity);
         $entityManager->flush();
 
@@ -193,7 +205,11 @@ class TagController extends Controller
 
         $entity = $entityManager->getRepository(Tag::class)->find($id);
         if (!$entity) {
-            return $this->nonExistentEntity($id);
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
+            $dispatcher->dispatch(AppBlogBundleEvents::DELETE_ENTITY_ERROR, $event);
+
+            return $event->getResponse();
         }
 
         $entityManager->remove($entity);
@@ -202,42 +218,5 @@ class TagController extends Controller
         return JsonResponse::create([
             'message' => sprintf('Tag deleted.'),
             Response::HTTP_OK]);
-
-    }
-
-    /**
-     * Entity isn't exist.
-     *
-     * @param $id
-     * @return JsonResponse
-     */
-    private function nonExistentEntity($id)
-    {
-        return JsonResponse::create([
-            'messages' => sprintf('There is no Tag with id %s', $id),
-            Response::HTTP_NOT_FOUND]);
-    }
-
-    /**
-     * Get error array.
-     *
-     * @param Form $form
-     * @return array
-     */
-    private function getErrorsAsArray(Form $form)
-    {
-        $errors = array();
-
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
-        }
-
-        foreach ($form->all() as $key => $child) {
-            if ($err = $this->getErrorsAsArray($child)) {
-                $errors[$key] = $err;
-            }
-        }
-
-        return $errors;
     }
 }
