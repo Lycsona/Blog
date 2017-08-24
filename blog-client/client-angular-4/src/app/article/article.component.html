@@ -1,11 +1,18 @@
 <div class="container m-b-5">
     <div class="jumbotron">
         <div class="container">
-            <h2 class="text-center"> {{article.name}} </h2>
-            <hr>
+            <div class="text-center">
+                <h2 class="text-center"> {{article.name}} </h2>
+                <span class="text-size-10 summary-text-color">&#160;{{article.createdAt | date: 'MMMM dd, yyyy'}}</span>
+                <hr>
+            </div>
             <div [innerHTML]="article.content"></div>
             <hr>
             <br>
+            <span *ngFor="let tag of article.tags;" class="label label-default text-color-whitesmoke m-l-1 cursor-hand"
+                  [routerLink]="['/list-of-articles/tag', tag.name]">
+                {{tag.name}}
+            </span>
         </div>
     </div>
 </div>
