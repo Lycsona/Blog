@@ -1,12 +1,20 @@
+import {TagDto} from "./TagDto";
+
 export class ArticleDto {
     private _id?: number;
     private _name?: string;
     private _content?: string;
+    private _createdAt?: Date;
+    private _updatedAt?: Date;
+    private _tags?: TagDto[];
 
     constructor() {
         this._id = 0;
         this._name = '';
         this._content = '';
+        this._createdAt = new Date;
+        this._updatedAt = new Date;
+        this._tags = [];
     }
 
     get id(): number {
@@ -33,11 +41,38 @@ export class ArticleDto {
         this._content = value;
     }
 
+    get createdAt(): Date {
+        return this._createdAt;
+    }
+
+    set createdAt(value: Date) {
+        this._createdAt = value;
+    }
+
+    get updatedAt(): Date {
+        return this._updatedAt;
+    }
+
+    set updatedAt(value: Date) {
+        this._updatedAt = value;
+    }
+
+    get tags(): TagDto[] {
+        return this._tags;
+    }
+
+    set tags(value: TagDto[]) {
+        this._tags = value;
+    }
+
     public toJSON() {
         return {
             id: this._id,
             name: this._name,
-            content: this._content
+            content: this._content,
+            createdAt: this._createdAt,
+            updatedAt: this._updatedAt,
+            tags: this._tags
         };
     }
 }
