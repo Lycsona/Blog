@@ -15,10 +15,11 @@ class ArticleRepository extends EntityRepository
     public function selectAllArticlesByTag($tag)
     {
         $builder = $this->getEntityManager()->createQueryBuilder()
-            ->select('a.name, a.content, a.createdAt, a.updatedAt, t.name as tag')
-            ->from(Article::class, 'a')
-            ->innerJoin(Tag::class, 't')
-            ->where(':tag MEMBER OF a.tags')
+            ->select('a')
+            ->from($this->getEntityName(), 'a')
+            ->leftJoin('a.tags', 't')
+            ->where('t.id = :tag')
+            ->groupBy('a')
             ->setParameter('tag', $tag);
 
         return $builder->getQuery()->getResult();
