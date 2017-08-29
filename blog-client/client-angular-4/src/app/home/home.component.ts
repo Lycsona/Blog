@@ -4,7 +4,7 @@ import {AppState} from '../app.service';
 import {Title} from '@angular/platform-browser';
 import {ArticleDto} from '../dto/ArticleDto';
 import {AppArticleService} from '../service/app.article.service';
-import {CommonUtil} from '../utils/common.util';
+import {CommonUtil} from '../util/common.util';
 
 @Component({
     selector: 'home',

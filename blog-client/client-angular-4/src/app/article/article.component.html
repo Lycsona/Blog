@@ -10,7 +10,7 @@
             <hr>
             <br>
             <span *ngFor="let tag of article.tags;" class="label label-default text-color-whitesmoke m-l-1 cursor-hand"
-                  [routerLink]="['/list-of-articles/tag', tag.name]">
+                  [routerLink]="['/list-of-articles/tag', tag.id]">
                 {{tag.name}}
             </span>
         </div>

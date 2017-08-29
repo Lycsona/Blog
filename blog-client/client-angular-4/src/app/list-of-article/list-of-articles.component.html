@@ -1,19 +1,18 @@
-<div class="container col-lg-12 m-t-1 m-b-1">
+<div class="container col-lg-12 m-t-5 m-b-2">
 
-    <div class="row m-b-2">
+    <div class="row m-b-5">
         <div *ngIf="articles.length !== 0">
-            <div *ngFor="let article of articles"
+            <div *ngFor="let key of articles.keys(hash)"
                  class="panel panel-default col-md-6 col-sm-9 col-xs-10 center-block float-none cursor-hand">
-                <!--<div class="panel-body article-block" [routerLink]="['/article', articles[key].art.id]"-->
-                <div class="panel-body article-block"
-                     [routerLink]="['/article', article.id]">
-                    <h3 class="text-center text-uppercase article-title">{{article.name}}</h3>
+                <div class="panel-body article-block" [routerLink]="['/article', tagUrl]"
+                     placement="right">
+                    <h3 class="text-center text-uppercase article-title">{{articles[key].art.name}}</h3>
                     <div class="text-center small p-b-1">
 
                     </div>
                     <div class="p-b-4 p-t-5 text-size-13 summary-text">
                         <div class="text-justify summary-text-color"
-                             [innerHTML]="article.content"></div>
+                             [innerHTML]="articles[key].art.content"></div>
                     </div>
                 </div>
 
@@ -22,17 +21,21 @@
                         <div class="pull-left">
                             <i class="fa fa-calendar icon-color" aria-hidden="true"></i>
                             <span class="summary-text-color">
-                                <small> &#160;{{article.createdAt | date: 'MMMM dd, yyyy'}}</small>
+                                <small> &#160;{{articles[key].art.createdAt | date: 'MMMM dd, yyyy'}}</small>
                             </span>
                         </div>
                         <div class="pull-right">
-                            <span *ngIf="article.tags.length > 0">
                             <i class="fa fa-tags icon-color" aria-hidden="true"></i>
-                                <span *ngFor="let tag of article.tags;"
-                                      class="label-tag disable-tag-label-color tag-label-color cursor-hand"
-                                      [routerLink]="['/list-of-articles/tag', tag.id]">
-                                   <small>{{tag.name}}</small>
-                                </span>
+                            <span *ngFor="let tag of articles[key].art.tags;"
+                                  class="label-tag disable-tag-label-color tag-label-color cursor-hand"
+                                  (click)="refresh()"
+                                  [routerLink]="['/list-of-articles/tag', tag.id]">
+                                   <small *ngIf="tagUrl === tag.id" class="icon-color">
+                                       {{tag.name}}
+                                   </small>
+                                   <small *ngIf="tagUrl !== tag.id">
+                                       {{tag.name}}
+                                   </small>
                             </span>
                         </div>
                     </div>
@@ -43,4 +46,6 @@
     <div *ngIf="articles.length === 0" class="article-block">
         <h4 class="text-center text-uppercase summary-text-color article-title">Loading...</h4>
     </div>
+
 </div>
+

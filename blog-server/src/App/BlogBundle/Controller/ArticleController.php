@@ -3,6 +3,7 @@
 namespace App\BlogBundle\Controller;
 
 use App\BlogBundle\AppBlogBundleEvents;
+use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
@@ -219,5 +220,31 @@ class ArticleController extends Controller
             'message' => sprintf('Article deleted.'),
             Response::HTTP_OK]);
 
+    }
+
+    /**
+     * Get all articles by tag.
+     *
+     * @ApiDoc(
+     *   section = "Article",
+     *   resource = true
+     * )
+     *
+     * @Method("GET")
+     * @Route("api/articles/tag/{tag}")
+     * @param $tag
+     * @return JsonResponse
+     */
+    public function getArticlesByTagAction($tag)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entities = $entityManager->getRepository(Article::class)->selectAllArticlesByTag($tag);
+        $articles = $this->get('serializer')->serialize(
+            $entities,
+            'json'
+        );
+
+        return JsonResponse::fromJsonString($articles, Response::HTTP_OK);
     }
 }

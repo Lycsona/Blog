@@ -19,7 +19,7 @@
     <%= webpackConfig.htmlElements.headTags %>
     <% } %>
 
-    <%= htmlWebpackPlugin.files.webpackManifest %>
+    <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
 </head>
 
 <body>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
-import {apiPrefix, CommonUtil} from '../utils/common.util';
+import {apiPrefix, CommonUtil} from '../util/common.util';
 
 const ARTICLE = apiPrefix.concat('/api/articles');
 
@@ -23,6 +23,15 @@ export class AppArticleService {
     public getArticleByUrlId(id: string): Observable<Response> {
         return this.http
             .get(ARTICLE.concat('/').concat(id), null)
+            .map((res: Response) => {
+                return res;
+            })
+            .catch(CommonUtil.handleError);
+    }
+
+    public getArticlesByTag(id: string): Observable<Response> {
+        return this.http
+            .get(`${ARTICLE}/tag/${id}`, null)
             .map((res: Response) => {
                 return res;
             })
