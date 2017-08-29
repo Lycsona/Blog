@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
-import {apiPrefix, CommonUtil} from '../utils/common.util';
+import {apiPrefix, CommonUtil} from '../util/common.util';
 
 const ARTICLE = apiPrefix.concat('/api/articles');
 
