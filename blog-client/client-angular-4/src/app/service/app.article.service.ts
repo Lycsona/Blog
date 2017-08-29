@@ -28,4 +28,13 @@ export class AppArticleService {
             })
             .catch(CommonUtil.handleError);
     }
+
+    public getArticlesByTag(id: string): Observable<Response> {
+        return this.http
+            .get(`${ARTICLE}/tag/${id}`, null)
+            .map((res: Response) => {
+                return res;
+            })
+            .catch(CommonUtil.handleError);
+    }
 }
