@@ -30,7 +30,7 @@
                             <i class="fa fa-tags icon-color" aria-hidden="true"></i>
                                 <span *ngFor="let tag of article.tags;"
                                       class="label-tag disable-tag-label-color tag-label-color cursor-hand"
-                                      [routerLink]="['/list-of-articles/tag', tag.name]">
+                                      [routerLink]="['/list-of-articles/tag', tag.id]">
                                    <small>{{tag.name}}</small>
                                 </span>
                             </span>
