@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityRepository;
 class ArticleRepository extends EntityRepository
 {
     /**
-     * @param $tag
+     * Get all articles by tag id.
+     *
+     * @param integer $tag
      * @return array
      */
     public function selectAllArticlesByTag($tag)
