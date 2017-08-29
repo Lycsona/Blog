@@ -2,7 +2,7 @@ import {Headers, RequestOptions, Response} from "@angular/http";
 import {Observable} from "rxjs";
 
 export const apiPrefix = 'http://blog.loc';
-export const pageTitle = 'Maria';
+export const pageTitle = 'Maria Ostashevskaya';
 
 export class CommonUtil {
 

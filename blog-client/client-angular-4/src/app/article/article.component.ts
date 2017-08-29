@@ -3,7 +3,7 @@ import {AppArticleService} from "../service/app.article.service";
 import {ActivatedRoute} from "@angular/router";
 import {ArticleDto} from "../dto/ArticleDto";
 import {DOCUMENT} from "@angular/platform-browser";
-import {CommonUtil} from "../utils/common.util";
+import {CommonUtil} from "../util/common.util";
 
 @Component({
     selector: 'article',
