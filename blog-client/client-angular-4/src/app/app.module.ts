@@ -21,6 +21,7 @@ import '../styles/styles.scss';
 import '../styles/headings.css';
 import {AppArticleService} from './service/app.article.service';
 import {ArticleComponent} from "./article/article.component";
+import {ListOfArticles} from "./list-of-article/list-of-articles.component";
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -42,6 +43,7 @@ type StoreType = {
     declarations: [
         AppComponent,
         ArticleComponent,
+        ListOfArticles,
         AboutComponent,
         HomeComponent,
         NoContentComponent,
