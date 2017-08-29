@@ -2,8 +2,6 @@
 
 namespace App\BlogBundle\Repository;
 
-use App\BlogBundle\Entity\Article;
-use App\BlogBundle\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 
 class ArticleRepository extends EntityRepository
