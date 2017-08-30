@@ -58,6 +58,15 @@ class Article
      */
     private $tags;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @JMS\Groups("list")
+     *
+     * @ORM\OneToOne(targetEntity="PageViews", inversedBy="article")
+     * @ORM\JoinColumn(name="page_views_id", referencedColumnName="id")
+     */
+    private $pageViews;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -185,5 +194,21 @@ class Article
     public function setTags($tags)
     {
         $this->tags = $tags;
+    }
+
+    /**
+     * @return PageViews
+     */
+    public function getPageViews()
+    {
+        return $this->pageViews;
+    }
+
+    /**
+     * @param PageViews $pageViews
+     */
+    public function setPageViews($pageViews)
+    {
+        $this->pageViews = $pageViews;
     }
 }
