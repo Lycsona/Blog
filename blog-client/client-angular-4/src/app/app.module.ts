@@ -35,6 +35,8 @@ import {NoContentComponent} from './no-content';
 import {AppArticleService} from './service/app.article.service';
 import {ArticleComponent} from "./article/article.component";
 import {ListOfArticles} from "./list-of-article/list-of-articles.component";
+import {AppFooterComponent} from "./common/footer/app.footer.component";
+import {AppHeaderComponent} from "./common/header/app.header.component";
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -54,6 +56,8 @@ type StoreType = {
 @NgModule({
     bootstrap: [AppComponent],
     declarations: [
+        AppHeaderComponent,
+        AppFooterComponent,
         AppComponent,
         ArticleComponent,
         ListOfArticles,
