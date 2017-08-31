@@ -3,12 +3,13 @@
 namespace App\BlogBundle\Controller;
 
 use App\BlogBundle\AppBlogBundleEvents;
-use App\BlogBundle\Entity\Tag;
+use App\BlogBundle\DTO\ArticleDTO;
+use App\BlogBundle\Entity\PageViews;
 use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
-use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
+use App\BlogBundle\Entity\Tag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,6 +79,8 @@ class ArticleController extends Controller
 
             return $event->getResponse();
         }
+
+        $this->incrementPageViews($entity);
 
         $entityJson = $this->get('serializer')->serialize(
             $entity,
@@ -246,5 +249,16 @@ class ArticleController extends Controller
         );
 
         return JsonResponse::fromJsonString($articles, Response::HTTP_OK);
+    }
+
+    private function incrementPageViews(Article $article)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $pageViews = $article->getPageViews();
+        $pageViews->setCounter($pageViews->getCounter() + 1);
+
+        $entityManager->persist($pageViews);
+        $entityManager->flush();
     }
 }
