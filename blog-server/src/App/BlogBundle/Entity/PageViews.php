@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\BlogBundle\Repository\PageViewsRepository")
  * @ORM\Table(name="page_views")
  *
- * Defines the properties of the Article entity to represent the application Articles.
+ * Defines the properties of the PageViews entity to represent the application PageViews.
  */
 class PageViews
 {
@@ -25,10 +25,8 @@ class PageViews
     /**
      * @ORM\Column(type="integer")
      * @JMS\Groups("list")
-     *
-     * @ORM\OneToOne(targetEntity="Article", mappedBy="pageViews")
      */
-    private $article;
+    private $counter = 0;
 
     /**
      * @return mixed
@@ -47,18 +45,18 @@ class PageViews
     }
 
     /**
-     * @return Article
+     * @return integer
      */
-    public function getArticle()
+    public function getCounter()
     {
-        return $this->article;
+        return $this->counter;
     }
 
     /**
-     * @param Article $article
+     * @param integer $counter
      */
-    public function setArticle($article)
+    public function setCounter($counter)
     {
-        $this->article = $article;
+        $this->counter = $counter;
     }
 }
