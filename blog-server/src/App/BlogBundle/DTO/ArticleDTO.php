@@ -2,6 +2,7 @@
 
 namespace App\BlogBundle\DTO;
 
+use App\BlogBundle\Entity\PageViews;
 use App\BlogBundle\Entity\Tag;
 
 /**
@@ -33,6 +34,11 @@ class ArticleDTO
      * @var Tag
      */
     private $tags;
+
+    /**
+     * @var PageViews
+     */
+    private $pageViews;
 
     /**
      * @return mixed
@@ -122,5 +128,37 @@ class ArticleDTO
     public function removeTag(Tag $tags)
     {
         $this->tags->removeElement($tags);
+    }
+
+    /**
+     * @return Tag
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Tag $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * @return PageViews
+     */
+    public function getPageViews()
+    {
+        return $this->pageViews;
+    }
+
+    /**
+     * @param PageViews $pageViews
+     */
+    public function setPageViews($pageViews)
+    {
+        $this->pageViews = $pageViews;
     }
 }

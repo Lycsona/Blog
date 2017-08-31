@@ -50,7 +50,7 @@ class Article
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="tag", inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles")
      * @ORM\JoinTable(name="article_tag",
      *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -58,8 +58,16 @@ class Article
      */
     private $tags;
 
+    /**
+     * @ORM\OneToOne(targetEntity="PageViews", cascade={"all"})
+     * @ORM\JoinColumn(name="page_views_id", referencedColumnName="id")
+     *
+     */
+    private $pageViews;
+
     public function __construct()
     {
+        $this->pageViews = new PageViews();
         $this->tags = new ArrayCollection();
         $this->createdAt = date_create('now');
     }
@@ -185,5 +193,21 @@ class Article
     public function setTags($tags)
     {
         $this->tags = $tags;
+    }
+
+    /**
+     * @return PageViews
+     */
+    public function getPageViews()
+    {
+        return $this->pageViews;
+    }
+
+    /**
+     * @param PageViews $pageViews
+     */
+    public function setPageViews($pageViews)
+    {
+        $this->pageViews = $pageViews;
     }
 }
