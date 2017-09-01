@@ -33,6 +33,7 @@ import {HomeComponent} from './home';
 import {AboutComponent} from './about';
 import {NoContentComponent} from './no-content';
 import {AppArticleService} from './service/app.article.service';
+import {AppPageViewService} from './service/app.page.view.service';
 import {ArticleComponent} from "./article/article.component";
 import {ListOfArticles} from "./list-of-article/list-of-articles.component";
 import {AppFooterComponent} from "./common/footer/app.footer.component";
@@ -81,6 +82,7 @@ type StoreType = {
         ENV_PROVIDERS,
         APP_PROVIDERS,
         AppArticleService,
+        AppPageViewService,
     ]
 })
 export class AppModule {

@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {AppArticleService} from "../service/app.article.service";
+import {AppPageViewService} from "../service/app.page.view.service";
 import {ActivatedRoute} from "@angular/router";
 import {ArticleDto} from "../dto/ArticleDto";
 import {DOCUMENT} from "@angular/platform-browser";
@@ -15,7 +16,7 @@ export class ArticleComponent implements OnInit {
     public originalArticle: ArticleDto;
 
     constructor(private appArticleService: AppArticleService, private route: ActivatedRoute,
-                @Inject(DOCUMENT) private document: any) {
+                private appPageViewService: AppPageViewService, @Inject(DOCUMENT) private document: any) {
         this.article = new ArticleDto();
         this.originalArticle = new ArticleDto();
     }
@@ -42,6 +43,7 @@ export class ArticleComponent implements OnInit {
                     this.article.updatedAt = jsonArticle.updatedAt;
                     this.article.tags = jsonArticle.tags;
 
+                    this.appPageViewService.incrementPageView(<string> jsonArticle.id).subscribe();
                 }, CommonUtil.handleError)
         }).catch((error) => console.error(error));
     }
