@@ -2,7 +2,7 @@
 
     <div class="row m-b-2">
         <div *ngIf="articles.length !== 0">
-            <div *ngFor="let article of articles"
+            <div *ngFor="let article of pagedArticles"
                  class="panel panel-default col-md-6 col-sm-9 col-xs-10 center-block float-none cursor-hand">
                 <!--<div class="panel-body article-block" [routerLink]="['/article', articles[key].art.id]"-->
                 <div class="panel-body article-block"
@@ -37,6 +37,26 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- pager -->
+            <div class="panel panel-default col-md-6 col-sm-9 col-xs-10 center-block float-none cursor-hand">
+                <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a (click)="setPage(1)">First</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+                    </li>
+                    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                        <a (click)="setPage(page)">{{page}}</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a (click)="setPage(pager.currentPage + 1)">Next</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a (click)="setPage(pager.totalPages)">Last</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
