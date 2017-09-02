@@ -31,22 +31,33 @@ class ArticleController extends Controller
      *   }
      * )
      *
-     * @Route("api/articles", name="get_articles")
+     * @Route("api/articles/page/{page}/size/{size}", name="get_articles")
      * @Method("GET")
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getAllArticleAction()
+    public function getAllArticleAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $entities = $entityManager->getRepository(Article::class)->findAll();
+        $page = $request->get('page');
+        $size = $request->get('size');
+
+        $result = $entityManager->getRepository(Article::class)
+            ->selectAllArticles($page, $size);
+
         $articles = $this->get('serializer')->serialize(
-            $entities,
+            $result['queryResult'],
             'json'
         );
 
-        return JsonResponse::fromJsonString($articles, Response::HTTP_OK);
+        return new JsonResponse(array(
+            'articles' => json_decode($articles),
+            'totalPages' => $result['totalPages'],
+            'firstPage' => $result['firstPage'],
+            'lastPage' => $result['lastPage'],
+        ), Response::HTTP_OK);
     }
 
     /**
