@@ -23,6 +23,7 @@ class ModelFactory
         $article = new Article();
         $article->setName($dto->getName());
         $article->setContent($dto->getContent());
+        $article->setTags($dto->getTags());
 
         return $article;
     }

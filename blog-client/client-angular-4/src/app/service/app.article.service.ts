@@ -11,9 +11,13 @@ export class AppArticleService {
     constructor(private http: Http) {
     }
 
-    public getArticles(): Observable<Response> {
+    public getArticles(page: number, size: number): Observable<Response> {
         return this.http
-            .get(ARTICLE, CommonUtil.getContentTypeJson())
+            .get(ARTICLE
+                .concat('/page/')
+                .concat(String(page))
+                .concat('/size/')
+                .concat(String(size)), null)
             .map((res: Response) => {
                 return res;
             })

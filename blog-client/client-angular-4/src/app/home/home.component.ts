@@ -16,9 +16,14 @@ export class HomeComponent implements OnInit {
 
     public articles: ArticleDto[];
 
-    constructor(public appArticleService: AppArticleService,
-                public appState: AppState,
-                public title: Title) {
+    pageNo: number = 0;
+    pageSize: number = 5;
+    pageTotal: number[];
+    isFirst: boolean;
+    isLast: boolean;
+
+    constructor(public appArticleService: AppArticleService, public appState: AppState, public title: Title) {
+        this.pageTotal = [];
         this.articles = [];
     }
 
@@ -27,11 +32,15 @@ export class HomeComponent implements OnInit {
     }
 
     private getAllArticles() {
-        this.appArticleService.getArticles()
+        this.appArticleService.getArticles(this.pageNo, this.pageSize)
             .subscribe((res: any) => {
                 let jsonArray = JSON.parse(res._body);
+                this.pageTotal = new Array(jsonArray.totalPages);
+                this.isFirst = jsonArray.firstPage;
+                this.isLast = jsonArray.lastPage;
+                this.articles = [];
 
-                jsonArray.map((art) => {
+                jsonArray.articles.map((art) => {
                     let article = new ArticleDto();
                     article.id = art.id;
                     article.name = art.name;
@@ -44,4 +53,24 @@ export class HomeComponent implements OnInit {
                 });
             }, CommonUtil.handleError);
     }
+
+    public changePage(page) {
+        this.pageNo = page;
+        this.getAllArticles();
+    }
+
+    public nextPage() {
+        if (this.pageNo + 1 !== this.pageTotal.length) {
+            this.pageNo += 1;
+            this.getAllArticles();
+        }
+    }
+
+    public prevPage() {
+        if (this.pageNo !== 0) {
+            this.pageNo -= 1;
+            this.getAllArticles();
+        }
+    }
+
 }

@@ -38,6 +38,27 @@
                     </div>
                 </div>
             </div>
+            <!-- paginating -->
+            <div *ngIf="pageTotal.length > 1">
+                <div class="row">
+                    <div class="col-md-7 col-xs-9 col-md-offset-5 col-sm-offset-5 col-xs-offset-3">
+                        <div class="col-md-6 col-xs-12 col-md-offset-1">
+                            <ul class="pagination pagination-sm">
+                                <li [ngClass]="isFirst ? 'disabled' : ''">
+                                    <a (click)="prevPage()">«</a>
+                                </li>
+                                <li *ngFor="let page of pageTotal; let index = index"
+                                    [ngClass]="pageNo === index ? 'active' : ''">
+                                    <a (click)="changePage(index)">{{ index + 1 }}</a>
+                                </li>
+                                <li [ngClass]="isLast ? 'disabled' : ''">
+                                    <a (click)="nextPage()">»</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div *ngIf="articles.length === 0" class="article-block">
