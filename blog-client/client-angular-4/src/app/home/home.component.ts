@@ -5,7 +5,6 @@ import {Title} from '@angular/platform-browser';
 import {ArticleDto} from '../dto/ArticleDto';
 import {AppArticleService} from '../service/app.article.service';
 import {CommonUtil} from '../util/common.util';
-import {AppPagerService} from "../service/app.pager.service";
 
 @Component({
     selector: 'home',
@@ -17,14 +16,14 @@ export class HomeComponent implements OnInit {
 
     public articles: ArticleDto[];
 
-    // pager object
-    pager: any = {};
+    pageNo: number = 0;
+    pageSize: number = 5;
+    pageTotal: number[];
+    isFirst: boolean;
+    isLast: boolean;
 
-    // paged items
-    pagedArticles: any[];
-
-    constructor(public appArticleService: AppArticleService, public AppPagerService: AppPagerService,
-                public appState: AppState, public title: Title) {
+    constructor(public appArticleService: AppArticleService, public appState: AppState, public title: Title) {
+        this.pageTotal = [];
         this.articles = [];
     }
 
@@ -33,11 +32,15 @@ export class HomeComponent implements OnInit {
     }
 
     private getAllArticles() {
-        this.appArticleService.getArticles()
+        this.appArticleService.getArticles(this.pageNo, this.pageSize)
             .subscribe((res: any) => {
                 let jsonArray = JSON.parse(res._body);
+                this.pageTotal = new Array(jsonArray.totalPages);
+                this.isFirst = jsonArray.firstPage;
+                this.isLast = jsonArray.lastPage;
+                this.articles = [];
 
-                jsonArray.map((art) => {
+                jsonArray.articles.map((art) => {
                     let article = new ArticleDto();
                     article.id = art.id;
                     article.name = art.name;
@@ -47,21 +50,27 @@ export class HomeComponent implements OnInit {
                     article.tags = art.tags;
 
                     this.articles.push(article);
-                    this.setPage(1);
                 });
             }, CommonUtil.handleError);
     }
 
-    setPage(page: number) {
-        if (page < 1 || page > this.pager.totalPages) {
-            return;
+    public changePage(page) {
+        this.pageNo = page;
+        this.getAllArticles();
+    }
+
+    public nextPage() {
+        if (this.pageNo + 1 !== this.pageTotal.length) {
+            this.pageNo += 1;
+            this.getAllArticles();
         }
+    }
 
-        // get pager object from service
-        this.pager = this.AppPagerService.getPager(this.articles.length, page);
-
-        // get current page of items
-        this.pagedArticles = this.articles.slice(this.pager.startIndex, this.pager.endIndex + 1);
+    public prevPage() {
+        if (this.pageNo !== 0) {
+            this.pageNo -= 1;
+            this.getAllArticles();
+        }
     }
 
 }
