@@ -8,3 +8,7 @@ services:
         arguments: []
         tags:
             - { name: kernel.event_subscriber }
+
+    cache_redis:
+        class: App\BlogBundle\Service\impl\CacheServiceImpl
+        arguments: []

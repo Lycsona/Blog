@@ -9,6 +9,8 @@ use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Entity\Tag;
+use App\BlogBundle\Service\CacheService;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,25 +41,36 @@ class ArticleController extends Controller
      */
     public function getAllArticleAction(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $result = [];
 
-        $page = $request->get('page');
-        $size = $request->get('size');
+        $cache = $this->get('cache_redis');
+        $cachedArticles = $cache->getAllArticles();
+        if ($cachedArticles->isHit()) {
+//            var_dump($cachedArticles);
+            $result = $cachedArticles->get();
+        } else {
+            $entityManager = $this->getDoctrine()->getManager();
 
-        $result = $entityManager->getRepository(Article::class)
-            ->selectAllArticles($page, $size);
+            $page = $request->get('page');
+            $size = $request->get('size');
+
+            $result = $entityManager->getRepository(Article::class)
+                ->selectAllArticles($page, $size);
+
+          //  $cache->saveArticles($result);
+        }
 
         $articles = $this->get('serializer')->serialize(
             $result['queryResult'],
             'json'
         );
 
-        return new JsonResponse(array(
-            'articles' => json_decode($articles),
-            'totalPages' => $result['totalPages'],
-            'firstPage' => $result['firstPage'],
-            'lastPage' => $result['lastPage'],
-        ), Response::HTTP_OK);
+//        return new JsonResponse(array(
+//            'articles' => json_decode($articles),
+//            'totalPages' => $result['totalPages'],
+//            'firstPage' => $result['firstPage'],
+//            'lastPage' => $result['lastPage'],
+//        ), Response::HTTP_OK);
     }
 
     /**
