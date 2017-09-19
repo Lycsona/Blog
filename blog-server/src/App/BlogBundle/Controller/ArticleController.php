@@ -39,23 +39,20 @@ class ArticleController extends Controller
      */
     public function getAllArticleAction(Request $request)
     {
-        $cache = $this->get('cache_redis');
+        $page = $request->get('page');
+        $size = $request->get('size');
 
-        $cachedArticles = $cache->getAllArticles();
+        $articleService = $this->get('article');
 
-        if ($cache->hasCache($cachedArticles)) {
-            $articles = $cache->getValue($cachedArticles);
+        $cachedArticles = $articleService->getArticlesFromCache();
+        if (!empty($cachedArticles)) {
+            $articles = $articleService->getArticlesWithPaginationFromCache($page, $size);
         } else {
+            $articles = $articleService->getArticlesWithPagination($page, $size);
 
-            $page = $request->get('page');
-            $size = $request->get('size');
-
-            $articles = $this->getDoctrine()->getManager()->getRepository(Article::class)
-                ->selectAllArticles($page, $size);
-
-            $cache->saveArticles($articles);
+            $articleService->saveCacheArticles();
         }
-        $articlesJson = $this->get('serializer')->serialize($articles['queryResult'], 'json');
+        $articlesJson = $this->get('serializer')->serialize($articles['result'], 'json');
 
         return new JsonResponse(array(
             'articles' => json_decode($articlesJson),
