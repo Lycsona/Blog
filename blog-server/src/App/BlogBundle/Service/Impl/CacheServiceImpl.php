@@ -2,48 +2,44 @@
 
 namespace App\BlogBundle\Service\Impl;
 
+use App\BlogBundle\Service\CacheConnectionService;
 use App\BlogBundle\Service\CacheService;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class CacheServiceImpl implements CacheService
 {
-    private $connection;
+    private $cache;
 
-    private static $cache;
-
-    public function __construct()
+    public function __construct(CacheConnectionService $cache)
     {
-        $this->connection = RedisAdapter::createConnection('redis://127.0.0.1:6379');
+        $this->cache = $cache->getInstance();
     }
 
-    public function getConnection()
+    public function hasCache($key)
     {
-        return $this->connection;
+        return $key->isHit() ? true : false;
     }
 
-    public function getCacheInstance()
+    public function getValue($key)
     {
-        if (!self::$cache) {
-            self::$cache = new RedisAdapter($this->connection, $namespace = '', $defaultLifetime = 0);
-        }
-        return self::$cache;
+        return $key->get();
     }
 
     public function getAllArticles()
     {
-        echo('Get articles from Redis.');
-
-        return $this->getCacheInstance()->getItem('articles');
+        return $this->cache->getItem('articles');
     }
 
-    public function saveArticles($data)
+    public function saveArticles($articles)
     {
         $cachedArticles = $this->getAllArticles();
-        $cachedArticles->set($data);
-        self::$cache->save($cachedArticles);
+
+        $cachedArticles->set($articles);
+
+        $this->cache->save($cachedArticles);
     }
 
     public function deleteArticles()
     {
+        $this->cache->deleteItem('articles');
     }
 }

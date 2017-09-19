@@ -9,6 +9,9 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    redis_connection:
+        class: App\BlogBundle\Service\impl\RedisConnectionServiceImpl
+
     cache_redis:
         class: App\BlogBundle\Service\impl\CacheServiceImpl
-        arguments: []
+        arguments: ['@redis_connection']

@@ -9,8 +9,6 @@ use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Entity\Tag;
-use App\BlogBundle\Service\CacheService;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,36 +39,30 @@ class ArticleController extends Controller
      */
     public function getAllArticleAction(Request $request)
     {
-        $result = [];
-
         $cache = $this->get('cache_redis');
+
         $cachedArticles = $cache->getAllArticles();
-        if ($cachedArticles->isHit()) {
-//            var_dump($cachedArticles);
-            $result = $cachedArticles->get();
+
+        if ($cache->hasCache($cachedArticles)) {
+            $articles = $cache->getValue($cachedArticles);
         } else {
-            $entityManager = $this->getDoctrine()->getManager();
 
             $page = $request->get('page');
             $size = $request->get('size');
 
-            $result = $entityManager->getRepository(Article::class)
+            $articles = $this->getDoctrine()->getManager()->getRepository(Article::class)
                 ->selectAllArticles($page, $size);
 
-          //  $cache->saveArticles($result);
+            $cache->saveArticles($articles);
         }
+        $articlesJson = $this->get('serializer')->serialize($articles['queryResult'], 'json');
 
-        $articles = $this->get('serializer')->serialize(
-            $result['queryResult'],
-            'json'
-        );
-
-//        return new JsonResponse(array(
-//            'articles' => json_decode($articles),
-//            'totalPages' => $result['totalPages'],
-//            'firstPage' => $result['firstPage'],
-//            'lastPage' => $result['lastPage'],
-//        ), Response::HTTP_OK);
+        return new JsonResponse(array(
+            'articles' => json_decode($articlesJson),
+            'totalPages' => $articles['totalPages'],
+            'firstPage' => $articles['firstPage'],
+            'lastPage' => $articles['lastPage'],
+        ), Response::HTTP_OK);
     }
 
     /**
