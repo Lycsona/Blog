@@ -2,20 +2,13 @@
 
 namespace App\BlogBundle\Controller;
 
-use App\BlogBundle\AppBlogBundleEvents;
-use App\BlogBundle\DTO\ArticleDTO;
-use App\BlogBundle\Event\ApiExceptionEvent;
-use App\BlogBundle\Factory\ModelFactory;
-use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Entity\Article;
-use App\BlogBundle\Entity\Tag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class ArticleController extends Controller
@@ -42,24 +35,7 @@ class ArticleController extends Controller
         $page = $request->get('page');
         $size = $request->get('size');
 
-        $articleService = $this->get('article');
-
-        $cachedArticles = $articleService->getArticlesFromCache();
-        if (!empty($cachedArticles)) {
-            $articles = $articleService->getArticlesWithPaginationFromCache($page, $size);
-        } else {
-            $articles = $articleService->getArticlesWithPagination($page, $size);
-
-            $articleService->saveCacheArticles();
-        }
-        $articlesJson = $this->get('serializer')->serialize($articles['result'], 'json');
-
-        return new JsonResponse(array(
-            'articles' => json_decode($articlesJson),
-            'totalPages' => $articles['totalPages'],
-            'firstPage' => $articles['firstPage'],
-            'lastPage' => $articles['lastPage'],
-        ), Response::HTTP_OK);
+        return $this->get('article')->getArticles($page, $size);
     }
 
     /**
@@ -81,23 +57,7 @@ class ArticleController extends Controller
      */
     public function getArticleByIdAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityJson = $this->get('serializer')->serialize(
-            $entity,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+        return $this->get('article')->getArticleById($id);
     }
 
     /**
@@ -123,23 +83,7 @@ class ArticleController extends Controller
      */
     public function createArticleAction(Request $request)
     {
-        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
-
-        $form = $this->createForm(ArticleType::class, $articleDTO);
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
-            $dispatcher->dispatch(AppBlogBundleEvents::CREATE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($articleDTO);
-        $entityManager->flush();
-
-        return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
+        return $this->get('article')->createArticle($request);
     }
 
     /**
@@ -167,32 +111,7 @@ class ArticleController extends Controller
      */
     public function editArticleAction(Request $request, $id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $dispatcher = $this->get('event_dispatcher');
-
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $form = $this->createForm(ArticleType::class, $entity, array('method' => 'PUT'));
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
-            $dispatcher->dispatch(AppBlogBundleEvents::UPDATE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager->persist($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Article updated.')],
-            Response::HTTP_OK);
+        return $this->get('article')->editArticle($request, $id);
     }
 
     /**
@@ -215,24 +134,7 @@ class ArticleController extends Controller
      */
     public function deleteArticleAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::DELETE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager->remove($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Article deleted.'),
-            Response::HTTP_OK]);
-
+        return $this->get('article')->deleteArticle($id);
     }
 
     /**
@@ -250,14 +152,6 @@ class ArticleController extends Controller
      */
     public function getArticlesByTagAction($tag)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entities = $entityManager->getRepository(Article::class)->selectAllArticlesByTag($tag);
-        $articles = $this->get('serializer')->serialize(
-            $entities,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($articles, Response::HTTP_OK);
+        return $this->get('article')->getArticlesByTag($tag);
     }
 }

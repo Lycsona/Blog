@@ -4,17 +4,19 @@ namespace App\BlogBundle\Service;
 
 interface ArticlesService
 {
-    public function getArticleById();
+    public function getArticleById($id);
 
-    public function createArticle();
+    public function createArticle($request);
 
-    public function editArticle();
+    public function editArticle($request, $id);
 
-    public function deleteArticle();
+    public function deleteArticle($id);
 
-    public function getArticlesByTag();
+    public function getArticlesByTag($tag);
 
-    public function getArticles();
+    public function getArticles($page, $size);
+
+    public function getArticlesFromDB();
 
     public function getArticlesFromCache();
 
@@ -22,5 +24,7 @@ interface ArticlesService
 
     public function getArticlesWithPaginationFromCache($page, $size);
 
-    public function saveCacheArticles();
+    public function createCacheArticles();
+
+    public function getException($statusCode, $eventName, $para);
 }
