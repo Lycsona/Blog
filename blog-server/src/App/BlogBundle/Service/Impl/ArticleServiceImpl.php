@@ -134,6 +134,9 @@ class ArticleServiceImpl implements ArticlesService
         $this->em->remove($article);
         $this->em->flush();
 
+        $this->cache->deleteArticles();
+        $this->createCacheArticles();
+
         return JsonResponse::create(['message' => sprintf('Article deleted.'), Response::HTTP_OK]);
     }
 
