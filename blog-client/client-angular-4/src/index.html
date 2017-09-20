@@ -23,6 +23,9 @@
 </head>
 
 <body>
+
+<div class='top'></div>
+
 <app>
     <div class="container">
         <div class="row">
@@ -41,6 +44,10 @@
     </div>
 </app>
 
+<div class='scrolltop'>
+    <div class='scroll icon'><i class="fa fa-4x fa-angle-up"></i></div>
+</div>
+
 <% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
 <!-- Webpack Dev Server reload -->
 <script src="/webpack-dev-server.js"></script>
@@ -48,6 +55,7 @@
 
 <script type="application/javascript" src="assets/js/material.js"></script>
 <script type="application/javascript" src="assets/js/ripples.js"></script>
+<script type="application/javascript" src="assets/js/scrollToTop.js"></script>
 <script type="application/javascript">
     $.material.init();
     $.material.ripples();
