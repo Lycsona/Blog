@@ -10,19 +10,19 @@ services:
             - { name: kernel.event_subscriber }
 
     redis_connection:
-        class: App\BlogBundle\Service\impl\RedisConnectionServiceImpl
+        class: App\BlogBundle\Service\Impl\RedisConnectionServiceImpl
 
     cache_redis:
-        class: App\BlogBundle\Service\impl\CacheServiceImpl
+        class: App\BlogBundle\Service\Impl\CacheServiceImpl
         arguments: ['@redis_connection']
 
     paginator:
-        class: App\BlogBundle\Service\impl\PaginatorServiceImpl
+        class: App\BlogBundle\Service\Impl\PaginatorServiceImpl
         tags:
             - { name: knp_paginator.injectable, paginator: knp_paginator }
 
     article:
-        class: App\BlogBundle\Service\impl\ArticleServiceImpl
+        class: App\BlogBundle\Service\Impl\ArticleServiceImpl
         arguments: [
               '@doctrine.orm.entity_manager',
               '@paginator',
