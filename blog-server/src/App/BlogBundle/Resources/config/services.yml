@@ -23,4 +23,11 @@ services:
 
     article:
         class: App\BlogBundle\Service\impl\ArticleServiceImpl
-        arguments: ['@doctrine.orm.entity_manager', '@paginator', '@cache_redis']
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@paginator',
+              '@cache_redis',
+              '@form.factory',
+              '@event_dispatcher',
+              '@serializer'
+              ]
