@@ -159,10 +159,15 @@ class ArticleServiceImpl implements ArticlesService
 
         $cachedArticles = $this->cache->getAllArticles();
         if ($this->cache->hasCache($cachedArticles)) {
-            $articles = $this->cache->getValue($cachedArticles);
+            $articles = $this->getArticlesTagsFromCache($this->cache->getValue($cachedArticles));
         }
 
         return $articles;
+    }
+
+    public function getArticlesTagsFromCache($articles)
+    {
+        return $this->cache->getArticlesWithTags($articles);
     }
 
     public function getArticlesWithPagination($page, $size)
