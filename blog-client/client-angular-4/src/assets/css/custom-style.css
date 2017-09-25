@@ -224,6 +224,12 @@ html, body {
     max-height: 140px;
 }
 
+.footer-custom {
+    background-color: #004444;
+    color: antiquewhite;
+    font-family: cursive;
+}
+
 /* tags */
 .disable-tag-label-color {
     background-color: transparent;
