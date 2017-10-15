@@ -228,6 +228,7 @@ html, body {
     background-color: #004444;
     color: antiquewhite;
     font-family: cursive;
+    max-height: 35px;
 }
 
 /* tags */
