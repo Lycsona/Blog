@@ -33,7 +33,8 @@ services:
         class: App\BlogBundle\Service\Impl\PageViewsImpl
         arguments: [
               '@doctrine.orm.entity_manager',
-              '@serializer'
+              '@serializer',
+              '@old_sound_rabbit_mq.page_views_producer'
               ]
 
     page_views_consumer:

@@ -5,10 +5,10 @@ namespace App\BlogBundle\Service\Impl;
 use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Service\PageViewsService;
 use Doctrine\ORM\EntityManager;
+use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\VarDumper\Exception\ThrowingCasterException;
 
 class PageViewsImpl implements PageViewsService
 {
@@ -16,13 +16,17 @@ class PageViewsImpl implements PageViewsService
 
     private $serializer;
 
+    private $rabbitMq;
+
     public function __construct(
         EntityManager $em,
-        Serializer $serializer
+        Serializer $serializer,
+        $rabbitMq
     )
     {
         $this->em = $em;
         $this->serializer = $serializer;
+        $this->rabbitMq = $rabbitMq;
     }
 
     public function incrementPageViews($id)
@@ -41,5 +45,14 @@ class PageViewsImpl implements PageViewsService
         );
 
         return JsonResponse::fromJsonString($pageViewsJson, Response::HTTP_OK);
+    }
+
+    public function incrementPageViewsWithRQ($id)
+    {
+        $message = new AMQPMessage($id);
+
+        $this->rabbitMq->publish($message->getBody());
+
+        return new JsonResponse($message->getBody(), 200);
     }
 }
