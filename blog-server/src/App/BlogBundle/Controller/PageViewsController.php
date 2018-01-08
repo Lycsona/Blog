@@ -2,7 +2,6 @@
 
 namespace App\BlogBundle\Controller;
 
-use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -46,13 +45,8 @@ class PageViewsController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function pageViewsRQFunction($id)
+    public function incrementPageViewsWithRQ($id)
     {
-        $message = new AMQPMessage($id);
-
-        $this->get('old_sound_rabbit_mq.page_views_producer')->publish($message->getBody());
-
-        return new JsonResponse($message->getBody(), 200);
+        return $this->get('page_views')->incrementPageViewsWithRQ($id);
     }
-
 }
