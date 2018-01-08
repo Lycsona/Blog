@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\VarDumper\Exception\ThrowingCasterException;
 
 class PageViewsImpl implements PageViewsService
 {
