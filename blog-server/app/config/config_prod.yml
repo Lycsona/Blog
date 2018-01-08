@@ -8,15 +8,20 @@ imports:
 #        query_cache_driver: apc
 
 monolog:
+    channels: [rabbitmq_log]
     handlers:
         main:
-            type: fingers_crossed
-            action_level: error
-            handler: nested
-        nested:
             type: stream
             path: '%kernel.logs_dir%/%kernel.environment%.log'
             level: debug
+            channels: ['!event, !rabbitmq_log']
         console:
             type: console
             process_psr_3_messages: false
+            channels: ['!event', '!doctrine', '!console, !rabbitmq_log']
+        rabbitmq_log:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%_rabbitmq.log'
+            buffer_size: 100
+            max_files: 1
+            channels: rabbitmq_log

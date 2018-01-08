@@ -1,9 +1,6 @@
 services:
-#    app_blog.example:
-#        class: App\BlogBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
 
-    app_blog.api_exception_listener:
+    api_exception_listener:
         class: App\BlogBundle\EventListener\ApiExceptionListener
         arguments: []
         tags:
@@ -31,3 +28,27 @@ services:
               '@event_dispatcher',
               '@serializer'
               ]
+
+    page_views:
+        class: App\BlogBundle\Service\Impl\PageViewsImpl
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@serializer'
+              ]
+
+    page_views_consumer:
+        class: App\BlogBundle\RabbitMq\Consumer\PageViewsConsumer
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@event_dispatcher',
+              '@page_views'
+              ]
+
+    page_views_listener:
+        class: App\BlogBundle\EventListener\PageViewsListener
+        arguments: [
+              '@page_views',
+              '@monolog.logger.rabbitmq_log'
+              ]
+        tags:
+            - { name: kernel.event_subscriber }

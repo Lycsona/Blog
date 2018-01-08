@@ -9,4 +9,6 @@ class AppBlogBundleEvents
     const CREATE_ENTITY_ERROR = 'createEntity';
     const UPDATE_ENTITY_ERROR = 'createEntity';
     const DELETE_ENTITY_ERROR = 'getEntity';
+
+    const PAGE_VIEW_EVENT = 'setIncrementPageViews';
 }
