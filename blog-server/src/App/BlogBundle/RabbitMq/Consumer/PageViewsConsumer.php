@@ -31,7 +31,7 @@ class PageViewsConsumer implements ConsumerInterface
 
     public function execute(AMQPMessage $msg)
     {
-        $event = new PageViewsEvent($msg->body);
+        $event = new PageViewsEvent($msg->getBody());
         $this->dispatcher->dispatch(AppBlogBundleEvents::PAGE_VIEW_EVENT, $event);
     }
 }
