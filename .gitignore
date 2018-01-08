@@ -1,2 +1,3 @@
 .idea
 /blog-server/app/sqlite.db.cache
+/blog-server/var/logs
