@@ -108,9 +108,11 @@ class ArticleServiceImpl implements ArticlesService
     {
         $article = $this->em->getRepository(Article::class)->find($id);
 
-        $form = $this->formFactory->create(ArticleType::class, $article, array('method' => 'PUT'));
+        $form = $this->formFactory->create(ArticleType::class, $article, array('method' => 'POST'));
         $form->handleRequest($request);
         if ($article && $form->isSubmitted()) {
+            $article->setImage($this->fileUploader->upload($form->getData()->getImage()));
+
             $this->em->persist($article);
             $this->em->flush();
 
