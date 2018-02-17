@@ -24,6 +24,7 @@ class ModelFactory
         $article->setName($dto->getName());
         $article->setContent($dto->getContent());
         $article->setTags($dto->getTags());
+        $article->setImage($dto->getImage());
 
         return $article;
     }

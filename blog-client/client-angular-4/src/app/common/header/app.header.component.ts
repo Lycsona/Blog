@@ -11,7 +11,9 @@ export class AppHeaderComponent {
     private _headerImage: string;
 
     constructor() {
-        this._headerImage = ""
+        this._headerImage = "";
+        this.author = "Ostashevskaya Maria";
+        this.year = 2018;
     }
 
     get headerImage(): string {

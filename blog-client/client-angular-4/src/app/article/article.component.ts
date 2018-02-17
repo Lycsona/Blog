@@ -51,6 +51,7 @@ export class ArticleComponent implements OnInit {
                     this.article.createdAt = jsonArticle.createdAt;
                     this.article.updatedAt = jsonArticle.updatedAt;
                     this.article.tags = jsonArticle.tags;
+                    this.article.image = jsonArticle.image;
 
                     this.stomp_subscription = this._stompService.publish('/queue/page-views',
                         <string> jsonArticle.id);

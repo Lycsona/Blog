@@ -36,6 +36,12 @@ class Article
     private $content;
 
     /**
+     * @ORM\Column(type="string", length=70)
+     * @JMS\Groups("list")
+     */
+    private $image;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
@@ -209,5 +215,21 @@ class Article
     public function setPageViews($pageViews)
     {
         $this->pageViews = $pageViews;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
     }
 }

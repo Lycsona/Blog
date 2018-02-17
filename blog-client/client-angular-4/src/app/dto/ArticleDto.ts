@@ -4,6 +4,7 @@ export class ArticleDto {
     private _id?: number;
     private _name?: string;
     private _content?: string;
+    private _image?: string;
     private _createdAt?: Date;
     private _updatedAt?: Date;
     private _tags?: TagDto[];
@@ -12,6 +13,7 @@ export class ArticleDto {
         this._id = 0;
         this._name = '';
         this._content = '';
+        this._image = '';
         this._createdAt = new Date;
         this._updatedAt = new Date;
         this._tags = [];
@@ -65,11 +67,20 @@ export class ArticleDto {
         this._tags = value;
     }
 
+    get image(): string {
+        return this._image;
+    }
+
+    set image(value: string) {
+        this._image = value;
+    }
+
     public toJSON() {
         return {
             id: this._id,
             name: this._name,
             content: this._content,
+            image: this._image,
             createdAt: this._createdAt,
             updatedAt: this._updatedAt,
             tags: this._tags

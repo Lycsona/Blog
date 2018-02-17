@@ -10,6 +10,7 @@ use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
+use App\BlogBundle\Service\FileUploader;
 use App\BlogBundle\Service\PaginatorService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
@@ -32,13 +33,16 @@ class ArticleServiceImpl implements ArticlesService
 
     private $serializer;
 
+    private $fileUploader;
+
     public function __construct(
         EntityManager $em,
         PaginatorService $pagination,
         CacheService $cache,
         FormFactory $formFactory,
         TraceableEventDispatcher $dispatcher,
-        Serializer $serializer
+        Serializer $serializer,
+        FileUploader $fileUploader
     )
     {
         $this->em = $em;
@@ -47,6 +51,7 @@ class ArticleServiceImpl implements ArticlesService
         $this->formFactory = $formFactory;
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
+        $this->fileUploader = $fileUploader;
     }
 
     public function getArticles($page, $size)
@@ -90,6 +95,8 @@ class ArticleServiceImpl implements ArticlesService
         if (!$form->isSubmitted()) {
             return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
         }
+
+        $articleDTO->setImage($this->fileUploader->upload($form->getData()->getImage()));
 
         $this->em->persist($articleDTO);
         $this->em->flush();
