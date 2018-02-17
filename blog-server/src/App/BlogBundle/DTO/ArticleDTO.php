@@ -21,6 +21,11 @@ class ArticleDTO
     private $content;
 
     /**
+     * @var string
+     */
+    private $image;
+
+    /**
      * @var \DateTime
      */
     private $createdAt;
@@ -160,5 +165,21 @@ class ArticleDTO
     public function setPageViews($pageViews)
     {
         $this->pageViews = $pageViews;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
     }
 }
