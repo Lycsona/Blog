@@ -112,6 +112,7 @@ class ArticleServiceImpl implements ArticlesService
         $form->handleRequest($request);
         if ($article && $form->isSubmitted()) {
             $article->setImage($this->fileUploader->upload($form->getData()->getImage()));
+            $article->setUpdatedAt(new \DateTime());
 
             $this->em->persist($article);
             $this->em->flush();
