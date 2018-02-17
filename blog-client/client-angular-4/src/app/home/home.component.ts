@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit {
                     article.createdAt = art.createdAt;
                     article.updatedAt = art.updatedAt;
                     article.tags = art.tags;
+                    article.image = art.image;
 
                     this.articles.push(article);
                 });
