@@ -100,7 +100,7 @@ class ArticleController extends Controller
      *   }
      * )
      *
-     * @Method("PUT")
+     * @Method("POST")
      * @Route("api/articles/{id}", name="edit_article")
      * @param Request $request
      * @param int $id

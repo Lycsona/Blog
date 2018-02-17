@@ -24,7 +24,7 @@ class ArticleType extends AbstractType
         $builder
             ->add('name')
             ->add('content', TextareaType::class)
-            ->add('image', FileType::class)
+            ->add('image')
             ->add('tags', EntityType::class, array(
                 'class' => Tag::class,
                 'choice_label' => 'name',

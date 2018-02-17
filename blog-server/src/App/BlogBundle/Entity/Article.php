@@ -76,6 +76,7 @@ class Article
         $this->pageViews = new PageViews();
         $this->tags = new ArrayCollection();
         $this->createdAt = date_create('now');
+        $this->updatedAt = date_create('now');
     }
 
     /**
