@@ -26,7 +26,8 @@ services:
               '@cache_redis',
               '@form.factory',
               '@event_dispatcher',
-              '@serializer'
+              '@serializer',
+              '@file_uploader'
               ]
 
     page_views:
@@ -53,3 +54,13 @@ services:
               ]
         tags:
             - { name: kernel.event_subscriber }
+
+#    admin.article:
+#        class: App\BlogBundle\Admin\ArticleAdmin
+#        arguments: [~, App\BlogBundle\Entity\Article, ~]
+#        tags:
+#            -
+#                name: sonata.admin
+#                manager_type: orm
+#                group: admin
+#        public: true
