@@ -12,7 +12,7 @@ export class AppHeaderComponent {
 
     constructor() {
         this._headerImage = "";
-        this.author = "Ostashevskaya Maria";
+        this.author = "Vain Maria";
         this.year = 2018;
     }
 

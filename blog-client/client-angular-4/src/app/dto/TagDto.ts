@@ -10,7 +10,6 @@ export class TagDto {
         this._createdAt = new Date;
         this._updatedAt = new Date;
         this._name = "";
-        this._cssSelector = "";
     }
 
     get id(): number {
@@ -22,11 +21,11 @@ export class TagDto {
     }
 
     get createdAt(): Date {
-        return this._createAt;
+        return this._createdAt;
     }
 
     set createdAt(value: Date) {
-        this._createAt = value;
+        this._createdAt = value;
     }
 
     get updatedAt(): Date {
