@@ -121,7 +121,7 @@ old_sound_rabbit_mq:
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
-    firewall_name: main
+    firewall_name: api
     user_class: App\BlogBundle\Entity\User
     from_email:
         address: "%mailer_address%"
@@ -142,9 +142,9 @@ lexik_jwt_authentication:
     token_ttl:        '%jwt_token_ttl%'
     encoder:
         # token encoder/decoder service - default implementation based on the namshi/jose library
-        service:            lexik_jwt_authentication.encoder.default
+        service: lexik_jwt_authentication.encoder.default
         # crypto engine used by the encoder service
-        crypto_engine:  openssl
+        crypto_engine: openssl
         # encryption algorithm used by the encoder service
         signature_algorithm: RS256
     token_extractors:
