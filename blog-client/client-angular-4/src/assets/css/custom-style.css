@@ -249,3 +249,7 @@ html, body {
     cursor: pointer;
     cursor: hand;
 }
+
+.container-main {
+    padding-top: 20px;
+}
