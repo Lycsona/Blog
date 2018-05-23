@@ -3,7 +3,6 @@
 namespace App\BlogBundle\DTO;
 
 use App\BlogBundle\Entity\PageViews;
-use App\BlogBundle\Entity\Tag;
 
 /**
  * DTO for Article object.
@@ -36,7 +35,7 @@ class ArticleDTO
     private $updatedAt;
 
     /**
-     * @var Tag
+     * @var $tags
      */
     private $tags;
 
@@ -110,33 +109,7 @@ class ArticleDTO
     }
 
     /**
-     * Add tags
-     *
-     * @param Tag $tags
-     * @return Tag
-     */
-    public function addTag(Tag $tags)
-    {
-        if (!$this->tags->contains($tags)) {
-            $this->tags[] = $tags;
-            $tags->addArticle($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove tags
-     *
-     * @param Tag $tags
-     */
-    public function removeTag(Tag $tags)
-    {
-        $this->tags->removeElement($tags);
-    }
-
-    /**
-     * @return Tag
+     * @return mixed
      */
     public function getTags()
     {
@@ -144,7 +117,7 @@ class ArticleDTO
     }
 
     /**
-     * @param Tag $tags
+     * @param $tags
      */
     public function setTags($tags)
     {
