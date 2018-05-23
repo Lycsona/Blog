@@ -2,6 +2,7 @@
 
 namespace App\BlogBundle\Service\Impl;
 
+use App\BlogBundle\AppBlogBundle;
 use App\BlogBundle\AppBlogBundleEvents;
 use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
@@ -89,17 +90,22 @@ class ArticleServiceImpl implements ArticlesService
     public function createArticle($request)
     {
         $articleDTO = ModelFactory::createArticle(new ArticleDTO());
+        $form = $this->formFactory->createBuilder(ArticleType::class, $articleDTO)->getForm();;
 
-        $form = $this->formFactory->create(ArticleType::class, $articleDTO);
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
+        $data = json_decode($request->getContent(), true);
+
+        $form->submit($data);
+        if (!$form->isValid()) {
+         //   var_dump($form->getData());die;
+            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['form' => $form]);
         }
-
-        $articleDTO->setImage($this->fileUploader->upload($form->getData()->getImage()));
+        if ($form->getData()->getImage()) {
+            $articleDTO->setImage($this->fileUploader->upload($form->getData()->getImage()));
+        }
 
         $this->em->persist($articleDTO);
         $this->em->flush();
+
 
         return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
     }
