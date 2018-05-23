@@ -1,0 +1,8 @@
+<div class="container">
+    <div class="btn-group-vertical">
+        <a [routerLink]="['./create-article']" class="btn btn-raised"> Create Article </a>
+        <a [routerLink]="['./list-of-articles']" class="btn btn-raised">List of Articles</a>
+        <a [routerLink]="['./manage-tags']" class="btn btn-raised">Manage Tags</a>
+        <a (click)="clearAllCaches()" class="btn btn-raised">Clear All Caches</a>
+    </div>
+</div>
