@@ -16,6 +16,9 @@ export class AppHeaderComponent {
     private _headerImage: string;
     public token: boolean;
 
+    private author: string;
+    private year: number;
+
     constructor(private appLogoutService: AppLogoutService,
                 private appSharedService: AppSharedService,
                 private router: Router) {
