@@ -7,10 +7,6 @@ import {
 } from '@angular/core';
 
 import {
-    NgModule,
-    ApplicationRef
-} from '@angular/core';
-import {
     removeNgStyles,
     createNewHosts,
     createInputTransfer
@@ -124,7 +120,6 @@ type StoreType = {
         APP_PROVIDERS,
         AppArticleService,
         AppPageViewService,
-        StompService,
         AppCacheService,
         Md5,
         AuthGuard,
@@ -132,6 +127,7 @@ type StoreType = {
         AppLogoutService,
         AppSharedService,
         AppTagService,
+        StompService,
         {
             provide: StompConfig,
             useValue: stompConfig
