@@ -119,6 +119,27 @@ old_sound_rabbit_mq:
             callback:         page_views_consumer
             enable_logger: true
 
+fos_rest:
+  param_fetcher_listener: true
+  body_listener: true
+  format_listener:
+    enabled: true
+  view:
+    view_response_listener: 'force'
+    formats:
+      json: true
+    templating_formats:
+        json: true
+    force_redirects:
+      html: true
+    failed_validation: HTTP_BAD_REQUEST
+    default_engine: twig
+  routing_loader:
+    include_format: false
+    default_format: json
+  serializer:
+    serialize_null: true
+
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: api

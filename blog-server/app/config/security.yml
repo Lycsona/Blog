@@ -26,7 +26,6 @@ security:
             anonymous: true
             form_login:
                 check_path:               /api/login_check
-                login_path:               /api/login
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
                 require_previous_session: false
@@ -36,19 +35,20 @@ security:
             provider: fos_userbundle
             stateless: true
             anonymous: true
+            form_login:
+                check_path:               /api/login_check
+                login_path:               /api/login
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
             lexik_jwt:
                 query_parameter:
                     enabled: true
                     name:    bearer
 
-        main:
-            pattern: ^/
-            form_login:
-                provider: fos_userbundle
-            logout:       true
-            anonymous:    true
-
     access_control:
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/articles/page/[0-9]+/size/[0-9]+, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
