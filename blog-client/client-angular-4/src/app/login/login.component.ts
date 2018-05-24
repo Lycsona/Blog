@@ -45,6 +45,8 @@ export class LoginComponent implements OnInit {
                     this.changeLoginButton();
 
                     this.router.navigate(['/admin']);
+                }else{
+                    this.router.navigate(['/home']);
                 }
             }, CommonUtil.handleError)
     }
