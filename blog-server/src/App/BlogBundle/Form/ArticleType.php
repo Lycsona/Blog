@@ -29,9 +29,7 @@ class ArticleType extends AbstractType
 //            ->add('updated_at')
             ->add('image')
             ->add('tags', EntityType::class, [
-                'class' => Tag::class,
-                'multiple' => true,
-                'expanded' => true,
+                'class' => Tag::class
             ]);
     }
 
