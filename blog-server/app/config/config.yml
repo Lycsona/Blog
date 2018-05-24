@@ -8,6 +8,9 @@ parameters:
 
 framework:
     secret: '%secret%'
+    session:
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
         strict_requirements: ~
@@ -18,10 +21,6 @@ framework:
     templating:
         engines: ['twig']
     default_locale: '%locale%'
-    trusted_hosts: ~
-    session:
-        handler_id: session.handler.native_file
-        save_path: "%kernel.root_dir%/sessions"
     fragments: ~
     http_method_override: true
     assets: ~
