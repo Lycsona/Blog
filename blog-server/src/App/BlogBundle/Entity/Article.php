@@ -36,7 +36,7 @@ class Article
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=70)
+     * @ORM\Column(type="string", length=70, nullable = true)
      * @JMS\Groups("list")
      */
     private $image;
@@ -168,8 +168,10 @@ class Article
      */
     public function addTag(Tag $tag)
     {
-        $this->tags[] = $tag;
-        $tag->addArticle($this);
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addArticle($this);
+        }
 
         return $this;
     }
@@ -193,13 +195,11 @@ class Article
     }
 
     /**
-     * @param ArrayCollection $tags
-     * @return Tag
+     * @param mixed $tags
      */
     public function setTags($tags)
     {
         $this->tags = $tags;
-        return $this;
     }
 
     /**
