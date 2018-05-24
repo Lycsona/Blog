@@ -43,7 +43,7 @@ class Tag
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="article", mappedBy="tags")
+     * @ORM\ManyToMany(targetEntity="Article", mappedBy="tags")
      */
     private $articles;
 
