@@ -90,13 +90,19 @@ class ArticleServiceImpl implements ArticlesService
     public function createArticle($request)
     {
         $articleDTO = ModelFactory::createArticle(new ArticleDTO());
-        $form = $this->formFactory->createBuilder(ArticleType::class, $articleDTO)->getForm();;
+        $form = $this->formFactory->create(ArticleType::class, $articleDTO);
+//        $data = json_decode($request->getContent(), true);
 
-        $data = json_decode($request->getContent(), true);
+//        $form->submit($data);
+//        var_dump($request->request->all());die;
 
-        $form->submit($data);
+        $form->submit($request->request->all());
+     //   var_dump($form->getErrors(true)->getChildren());die;
+
         if (!$form->isValid()) {
-         //   var_dump($form->getData());die;
+         //   var_dump($form->getErrors());die;
+
+            //   var_dump($form->getData());die;
             return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['form' => $form]);
         }
         if ($form->getData()->getImage()) {

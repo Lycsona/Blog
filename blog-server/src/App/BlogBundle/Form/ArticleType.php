@@ -7,6 +7,7 @@ use App\BlogBundle\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,11 +26,12 @@ class ArticleType extends AbstractType
         $builder
             ->add('name')
             ->add('content')
-//            ->add('created_at')
-//            ->add('updated_at')
             ->add('image')
-            ->add('tags', EntityType::class, [
-                'class' => Tag::class
+            ->add('tags', CollectionType::class, [
+                'entry_type' => TagType::class,
+                'entry_options' => array('label' => false),
+                'allow_add' => true,
+
             ]);
     }
 

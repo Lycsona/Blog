@@ -43,7 +43,9 @@ class Tag
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Article", mappedBy="tags")
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Article", mappedBy="tags", cascade={"persist"})
      */
     private $articles;
 

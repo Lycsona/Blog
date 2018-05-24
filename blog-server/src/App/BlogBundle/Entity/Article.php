@@ -56,7 +56,7 @@ class Article
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\JoinTable(name="article_tag",
      *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -164,16 +164,18 @@ class Article
      * Add tag
      *
      * @param Tag $tag
-     * @return Tag
+     * @return Article
      */
     public function addTag(Tag $tag)
     {
-        if (!$this->tags->contains($tag)) {
-            $this->tags[] = $tag;
-            $tag->addArticle($this);
+        if ($this->tags->contains($tag)) {
+            return $this; // or just return;
         }
 
-        return $this;
+        // This prevents adding duplicates of new tags that aren't in the
+        // DB already.
+        $tagKey = $tag->getName() ?? $tag->getHash();
+        $this->tags[$tagKey] = $tag;
     }
 
     /**
@@ -187,7 +189,7 @@ class Article
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getTags()
     {
@@ -195,7 +197,7 @@ class Article
     }
 
     /**
-     * @param mixed $tags
+     * @param ArrayCollection $tags
      */
     public function setTags($tags)
     {

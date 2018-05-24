@@ -4,6 +4,7 @@ namespace App\BlogBundle\DTO;
 
 use App\BlogBundle\Entity\PageViews;
 use App\BlogBundle\Entity\Tag;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DTO for Article object.
@@ -36,9 +37,14 @@ class ArticleDTO
     private $updatedAt;
 
     /**
-     * @var $tags
+     * @var ArrayCollection $tags
      */
     private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     /**
      * @var PageViews
@@ -110,7 +116,7 @@ class ArticleDTO
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getTags()
     {
@@ -118,7 +124,7 @@ class ArticleDTO
     }
 
     /**
-     * @param $tags
+     * @param array $tags
      */
     public function setTags($tags)
     {
