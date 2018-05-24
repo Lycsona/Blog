@@ -66,7 +66,7 @@ export class CreateArticleComponent implements OnInit {
                 ]
             ],
             'content': [this.model.content, [Validators.required,]],
-            'image': null
+            'image': null,
         });
 
         this.createArticleForm.valueChanges
@@ -128,8 +128,6 @@ export class CreateArticleComponent implements OnInit {
                 jsonArray.map(tag => {
                     let t = new TagDto();
                     t.id = tag.id;
-                    t.createdAt = tag.createdAt;
-                    t.updatedAt = tag.updatedAt;
                     t.name = tag.name;
                     this.tags.push(t);
                 });

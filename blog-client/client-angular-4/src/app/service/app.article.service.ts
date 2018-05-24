@@ -47,7 +47,7 @@ export class AppArticleService {
         let headers = CommonUtil.getAuthorizationHeader();
 
         return this.http
-            .post(`${ARTICLE}`, article, headers)
+            .post(`${ARTICLE}`, article.toJSON(), headers)
             .map((res: Response) => {
                 return res;
             })

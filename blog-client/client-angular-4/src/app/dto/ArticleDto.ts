@@ -77,12 +77,9 @@ export class ArticleDto {
 
     public toJSON() {
         return {
-            id: this._id,
             name: this._name,
             content: this._content,
             image: this._image,
-            createdAt: this._createdAt,
-            updatedAt: this._updatedAt,
             tags: this._tags
         };
     }

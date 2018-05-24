@@ -47,8 +47,6 @@ export class TagDto {
     public toJSON() {
         return {
             id: this._id,
-            createdAt: this._createdAt,
-            updatedAt: this._updatedAt,
             name: this._name
         };
     }
