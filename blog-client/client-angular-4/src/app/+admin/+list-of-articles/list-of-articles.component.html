@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+        <button class="btn btn-info" [routerLink]="['/admin']">
+            <i class="fa fa-backward" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="jumbotron">
+        <div class="list-group">
+            <div class="list-group-item" *ngFor="let article of articles">
+
+                <div class="row-content">
+                    <div class="row">
+                        <div class="row">
+                            <div class="least-content">Created - {{article.createdAt | date: 'dd/MM/yyyy'}}</div>
+                            <div class="least-content-u" *ngIf="article.updatedAt">
+                                Updated - {{article.updatedAt | date: 'dd/MM/yyyy'}}
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="list-group-item-heading">{{article.name}}</h4>
+
+                    <div class="list-group-item-text">
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+
+                                <a (click)="onDelete(article.id)" class="btn btn-warning">delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
