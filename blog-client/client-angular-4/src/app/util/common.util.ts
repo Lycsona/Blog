@@ -2,10 +2,18 @@ import {Headers, RequestOptions, Response} from "@angular/http";
 import {Observable} from "rxjs";
 import {Router} from "@angular/router";
 
-export const apiPrefix = 'http://blog.loc';
+export const apiPrefix = 'http://host5';
 export const pageTitle = 'Maria Vain';
 
 export class CommonUtil {
+    private static router: Router;
+
+    constructor(private router: Router) {
+    }
+
+    static redirectTo(route){
+      this.router.navigate([route]);
+    }
 
     public static getApiAddress(): string {
         const hostname = location.hostname;
@@ -28,8 +36,7 @@ export class CommonUtil {
             localStorage.removeItem("mv_token_odsfkgsmkn4nkwkjk2nn3");
         }
         if (error.url.includes('api/login')) {
-            console.error('handle login error');
-            Router.navigate(['/login']);
+            this.redirectTo('/login');
         }
         // return Observable.throw(error.json().error || 'Server error');
         return Observable.throw(error || 'Server error');
