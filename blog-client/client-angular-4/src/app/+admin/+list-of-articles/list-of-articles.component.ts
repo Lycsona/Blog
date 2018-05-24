@@ -22,37 +22,37 @@ export class ListOfArticlesComponent implements OnInit {
     }
 
     private getArticles() {
-        this.appArticleService.getAllArticles()
-            .subscribe((res: any) => {
-                let jsonArray = JSON.parse(res._body);
-                this.articles = [];
-
-                jsonArray.map(art => {
-                    let article = new ArticleDto();
-                    article.id = art.id;
-                    article.createAt = art.createAt;
-                    article.updatedAt = art.updatedAt;
-                    article.title = art.title;
-                    article.urlTitle = art.urlTitle;
-                    article.summary = art.summary;
-                    article.content = art.content;
-                    article.footer = art.footer;
-                    article.isSubArticle = art.subArticle;
-                    article.language = art.language;
-
-                    this.articles.push(article);
-                });
-
-            }, CommonUtil.handleError)
+        // this.appArticleService.getAllArticles()
+        //     .subscribe((res: any) => {
+        //         let jsonArray = JSON.parse(res._body);
+        //         this.articles = [];
+        //
+        //         jsonArray.map(art => {
+        //             let article = new ArticleDto();
+        //             article.id = art.id;
+        //             article.createAt = art.createAt;
+        //             article.updatedAt = art.updatedAt;
+        //             article.title = art.title;
+        //             article.urlTitle = art.urlTitle;
+        //             article.summary = art.summary;
+        //             article.content = art.content;
+        //             article.footer = art.footer;
+        //             article.isSubArticle = art.subArticle;
+        //             article.language = art.language;
+        //
+        //             this.articles.push(article);
+        //         });
+        //
+        //     }, CommonUtil.handleError)
     }
 
     private deleteArticle(id: string) {
-        this.appArticleService.deleteArticleById(id)
-            .subscribe((res: any) => {
-            }, CommonUtil.handleError)
+        // this.appArticleService.deleteArticleById(id)
+        //     .subscribe((res: any) => {
+        //     }, CommonUtil.handleError)
     }
 
     onDelete(id: string) {
-        this.deleteArticle(id);
+        // this.deleteArticle(id);
     }
 }
