@@ -118,28 +118,27 @@ class Tag
     }
 
     /**
-     * Add articles
+     * Add article
      *
-     * @param Article $articles
+     * @param Article $article
      * @return Tag
      */
-    public function addArticle(Article $articles)
+    public function addArticle(Article $article)
     {
-        if (!$this->articles->contains($articles)) {
-            $this->articles[] = $articles;
-            $articles->addTag($this);
-        }
+        $this->articles[] = $article;
+        $article->addTag($this);
 
         return $this;
     }
 
     /**
-     * Remove articles
+     * Remove article
      *
-     * @param Article $articles
+     * @param Article $article
      */
-    public function removeArticle(Article $articles)
+    public function removeArticle(Article $article)
     {
-        $this->articles->removeElement($articles);
+        $this->articles->removeElement($article);
+        $article->removeTag($this);
     }
 }

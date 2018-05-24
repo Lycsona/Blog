@@ -3,6 +3,7 @@
 namespace App\BlogBundle\DTO;
 
 use App\BlogBundle\Entity\PageViews;
+use App\BlogBundle\Entity\Tag;
 
 /**
  * DTO for Article object.

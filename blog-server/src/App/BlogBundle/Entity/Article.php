@@ -161,29 +161,27 @@ class Article
     }
 
     /**
-     * Add tags
+     * Add tag
      *
-     * @param Tag $tags
+     * @param Tag $tag
      * @return Tag
      */
-    public function addTag(Tag $tags)
+    public function addTag(Tag $tag)
     {
-        if (!$this->tags->contains($tags)) {
-            $this->tags[] = $tags;
-            $tags->addArticle($this);
-        }
+        $this->tags[] = $tag;
+        $tag->addArticle($this);
 
         return $this;
     }
 
     /**
-     * Remove tags
+     * Remove tag
      *
-     * @param Tag $tags
+     * @param Tag $tag
      */
-    public function removeTag(Tag $tags)
+    public function removeTag(Tag $tag)
     {
-        $this->tags->removeElement($tags);
+        $this->tags->removeElement($tag);
     }
 
     /**
@@ -195,11 +193,13 @@ class Article
     }
 
     /**
-     * @param mixed $tags
+     * @param ArrayCollection $tags
+     * @return Tag
      */
     public function setTags($tags)
     {
         $this->tags = $tags;
+        return $this;
     }
 
     /**
