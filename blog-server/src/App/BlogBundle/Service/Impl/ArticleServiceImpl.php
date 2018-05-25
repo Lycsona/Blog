@@ -6,9 +6,11 @@ use App\BlogBundle\AppBlogBundle;
 use App\BlogBundle\AppBlogBundleEvents;
 use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
+use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
+use App\BlogBundle\Repository\TagRepository;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
 use App\BlogBundle\Service\FileUploader;
@@ -89,27 +91,28 @@ class ArticleServiceImpl implements ArticlesService
 
     public function createArticle($request)
     {
-        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
-        $form = $this->formFactory->create(ArticleType::class, $articleDTO);
-//        $data = json_decode($request->getContent(), true);
+        $article = new Article();
+        $form = $this->formFactory->create(ArticleType::class, $article);
 
-//        $form->submit($data);
-//        var_dump($request->request->all());die;
+        $params = $request->request->all();
+        $tags = $request->request->get('tags');
+        unset($params['tags']);
 
-        $form->submit($request->request->all());
-     //   var_dump($form->getErrors(true)->getChildren());die;
-
+        $form->submit($params);
         if (!$form->isValid()) {
-         //   var_dump($form->getErrors());die;
-
-            //   var_dump($form->getData());die;
             return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['form' => $form]);
         }
+
         if ($form->getData()->getImage()) {
-            $articleDTO->setImage($this->fileUploader->upload($form->getData()->getImage()));
+            $article->setImage($this->fileUploader->upload($form->getData()->getImage()));
         }
 
-        $this->em->persist($articleDTO);
+        foreach ($tags as $tag) {
+            $tagEntity = $this->em->getRepository(Tag::class)->findOneBy(['id' => $tag['id']]);
+            $article->addTag($tagEntity);
+        }
+
+        $this->em->persist($article);
         $this->em->flush();
 
 

@@ -123,25 +123,20 @@ class Tag
      * Add article
      *
      * @param Article $article
-     * @return Tag
      */
     public function addArticle(Article $article)
     {
-        if (!$this->articles->contains($article)) {
-            $this->articles[] = $article;
-            $article->addTag($this);
-        }
-
-        return $this;
+        $this->articles[] = $article;
     }
 
     /**
      * Remove articles
      *
-     * @param Article $articles
+     * @param Article $article
      */
-    public function removeArticle(Article $articles)
+    public function removeArticle(Article $article)
     {
-        $this->articles->removeElement($articles);
+        $this->articles->removeElement($article);
+        $article->removeTag($this);
     }
 }

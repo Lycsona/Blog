@@ -164,18 +164,11 @@ class Article
      * Add tag
      *
      * @param Tag $tag
-     * @return Article
      */
     public function addTag(Tag $tag)
     {
-        if ($this->tags->contains($tag)) {
-            return $this; // or just return;
-        }
-
-        // This prevents adding duplicates of new tags that aren't in the
-        // DB already.
-        $tagKey = $tag->getName() ?? $tag->getHash();
-        $this->tags[$tagKey] = $tag;
+        $tag->addArticle($this);
+        $this->tags[] = $tag;
     }
 
     /**
