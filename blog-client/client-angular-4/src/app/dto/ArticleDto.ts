@@ -4,7 +4,7 @@ export class ArticleDto {
     private _id?: number;
     private _name?: string;
     private _content?: string;
-    private _image?: string;
+    private _image?: any;
     private _createdAt?: Date;
     private _updatedAt?: Date;
     private _tags?: TagDto[];
@@ -67,11 +67,11 @@ export class ArticleDto {
         this._tags = value;
     }
 
-    get image(): string {
+    get image(): object {
         return this._image;
     }
 
-    set image(value: string) {
+    set image(value: object) {
         this._image = value;
     }
 

@@ -55,6 +55,7 @@ export class CreateArticleComponent implements OnInit {
         this.formErrors = {
             'name': '',
             'content': '',
+            'image': '',
         };
 
         this.createArticleForm = this.fb.group({
@@ -66,7 +67,7 @@ export class CreateArticleComponent implements OnInit {
                 ]
             ],
             'content': [this.model.content, [Validators.required,]],
-            'image': null,
+            'image': [this.model.image],
         });
 
         this.createArticleForm.valueChanges
@@ -81,11 +82,11 @@ export class CreateArticleComponent implements OnInit {
             let file = event.target.files[0];
             reader.readAsDataURL(file);
             reader.onload = () => {
-                this.createArticleForm.get('image').setValue({
+                this.model.image = {
                     filename: file.name,
                     filetype: file.type,
                     value: reader.result.split(',')[1]
-                })
+                }
             };
         }
     }
