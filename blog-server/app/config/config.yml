@@ -60,7 +60,10 @@ swiftmailer:
     password: '%mailer_password%'
     spool: { type: memory }
 
-nelmio_api_doc: ~
+nelmio_api_doc:
+    sandbox:
+        request_format:
+            method: accept_header
 
 nelmio_cors:
         defaults:
@@ -121,6 +124,8 @@ old_sound_rabbit_mq:
 fos_rest:
   param_fetcher_listener: true
   body_listener: true
+  routing_loader:
+    include_format: false
   format_listener:
     enabled: true
   view:
@@ -133,9 +138,6 @@ fos_rest:
       html: true
     failed_validation: HTTP_BAD_REQUEST
     default_engine: twig
-  routing_loader:
-    include_format: false
-    default_format: json
   serializer:
     serialize_null: true
 
