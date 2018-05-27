@@ -3,11 +3,8 @@
 namespace App\BlogBundle\Form;
 
 use App\BlogBundle\Entity\Article;
-use App\BlogBundle\Entity\Tag;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,12 +20,8 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('content', TextareaType::class)
-            ->add('image')
-            ->add('tags', EntityType::class, array(
-                'class' => Tag::class,
-                'choice_label' => 'name',
-            ));
+            ->add('content')
+            ->add('image');
     }
 
     /**

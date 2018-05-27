@@ -36,7 +36,7 @@ class Article
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=70)
+     * @ORM\Column(type="string", length=70, nullable = true)
      * @JMS\Groups("list")
      */
     private $image;
@@ -56,7 +56,7 @@ class Article
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\JoinTable(name="article_tag",
      *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -161,33 +161,28 @@ class Article
     }
 
     /**
-     * Add tags
+     * Add tag
      *
-     * @param Tag $tags
-     * @return Tag
+     * @param Tag $tag
      */
-    public function addTag(Tag $tags)
+    public function addTag(Tag $tag)
     {
-        if (!$this->tags->contains($tags)) {
-            $this->tags[] = $tags;
-            $tags->addArticle($this);
-        }
-
-        return $this;
+        $tag->addArticle($this);
+        $this->tags[] = $tag;
     }
 
     /**
-     * Remove tags
+     * Remove tag
      *
-     * @param Tag $tags
+     * @param Tag $tag
      */
-    public function removeTag(Tag $tags)
+    public function removeTag(Tag $tag)
     {
-        $this->tags->removeElement($tags);
+        $this->tags->removeElement($tag);
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getTags()
     {
@@ -195,7 +190,7 @@ class Article
     }
 
     /**
-     * @param mixed $tags
+     * @param ArrayCollection $tags
      */
     public function setTags($tags)
     {

@@ -7,14 +7,13 @@ import {
 } from '@angular/core';
 
 import {
-    createInputTransfer,
+    removeNgStyles,
     createNewHosts,
-    removeNgStyles
+    createInputTransfer
 } from '@angularclass/hmr';
-
 import {
-    PreloadAllModules,
-    RouterModule
+    RouterModule,
+    PreloadAllModules
 } from '@angular/router';
 
 /*
@@ -39,6 +38,16 @@ import {ListOfArticles} from "./list-of-article/list-of-articles.component";
 import {AppFooterComponent} from "./common/footer/app.footer.component";
 import {AppHeaderComponent} from "./common/header/app.header.component";
 import {StompConfig, StompService} from '@stomp/ng2-stompjs';
+import {AuthGuard} from './util/auth-guard';
+import {LoginComponent} from "./login/login.component";
+import {AppLoginService} from "./service/app.login.service";
+import {AppLogoutService} from "./service/app.logout.service";
+import {AppSharedService} from "./service/app.shared.service";
+import {AppTagService} from "./service/app.tag.service";
+import {Md5} from "ts-md5/dist/md5";
+import {AppChangeHeaderImgService} from "./service/app.change.header.img.service";
+import {AppCacheService} from "./service/app.cache.service";
+import {TooltipModule} from 'ngx-bootstrap';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -91,6 +100,7 @@ type StoreType = {
         AboutComponent,
         HomeComponent,
         NoContentComponent,
+        LoginComponent
     ],
     /**
      * Import Angular's modules.
@@ -99,7 +109,8 @@ type StoreType = {
         BrowserModule,
         FormsModule,
         HttpModule,
-        RouterModule.forRoot(ROUTES, {useHash: true, preloadingStrategy: PreloadAllModules})
+        RouterModule.forRoot(ROUTES, {useHash: true, preloadingStrategy: PreloadAllModules}),
+        TooltipModule.forRoot()
     ],
     /**
      * Expose our Services and Providers into Angular's dependency injection.
@@ -109,6 +120,13 @@ type StoreType = {
         APP_PROVIDERS,
         AppArticleService,
         AppPageViewService,
+        AppCacheService,
+        Md5,
+        AuthGuard,
+        AppLoginService,
+        AppLogoutService,
+        AppSharedService,
+        AppTagService,
         StompService,
         {
             provide: StompConfig,

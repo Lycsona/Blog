@@ -3,10 +3,9 @@
 namespace App\BlogBundle\Service\Impl;
 
 use App\BlogBundle\AppBlogBundleEvents;
-use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
+use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
-use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
@@ -18,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ArticleServiceImpl implements ArticlesService
 {
@@ -88,18 +88,31 @@ class ArticleServiceImpl implements ArticlesService
 
     public function createArticle($request)
     {
-        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
+        $article = new Article();
+        $form = $this->formFactory->create(ArticleType::class, $article);
 
-        $form = $this->formFactory->create(ArticleType::class, $articleDTO);
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
+        $params = $request->request->all();
+        $tags = $request->request->get('tags');
+        unset($params['tags']);
+
+        $form->submit($params);
+        if (!$form->isValid()) {
+            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['form' => $form]);
         }
 
-        $articleDTO->setImage($this->fileUploader->upload($form->getData()->getImage()));
+        if ($form->getData()->getImage()) {
+            $uploadedFile = $this->fileUploader->upload($form->getData()->getImage());
+            $article->setImage($uploadedFile);
+        }
 
-        $this->em->persist($articleDTO);
+        foreach ($tags as $tag) {
+            $tagEntity = $this->em->getRepository(Tag::class)->findOneBy(['id' => $tag['id']]);
+            $article->addTag($tagEntity);
+        }
+
+        $this->em->persist($article);
         $this->em->flush();
+
 
         return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
     }

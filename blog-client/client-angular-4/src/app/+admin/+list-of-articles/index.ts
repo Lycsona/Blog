@@ -1,0 +1,1 @@
+export {ListOfArticlesModule} from './list-of-articles.module';

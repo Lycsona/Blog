@@ -2,6 +2,8 @@
 
 namespace App\BlogBundle\DTO;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * DTO for Tag object.
  */
@@ -21,6 +23,17 @@ class TagDTO
      * @var \DateTime
      */
     private $updatedAt;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $articles;
+
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -69,4 +82,22 @@ class TagDTO
     {
         $this->updatedAt = $updatedAt;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @param ArrayCollection $articles
+     */
+    public function setArticles($articles)
+    {
+        $this->articles = $articles;
+    }
+
+
 }

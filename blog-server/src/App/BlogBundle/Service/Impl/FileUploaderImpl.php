@@ -14,13 +14,11 @@ class FileUploaderImpl implements FileUploader
         $this->targetDir = $targetDir;
     }
 
-    public function upload(UploadedFile $file)
+    public function upload($data)
     {
-        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+        file_put_contents($this->getTargetDir() . $data['filename'],  base64_decode($data['value']));
 
-        $file->move($this->getTargetDir(), $fileName);
-
-        return $fileName;
+        return $data['filename'];
     }
 
     public function getTargetDir()

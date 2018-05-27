@@ -3,10 +3,14 @@
     <div class="header">
         <div class="sides">
             <a [routerLink]="['/']" class="logo">BLOG</a>
+            <a *ngIf="token" [routerLink]="['/logout']" (click)="logout()" class="logo">logout</a>
+            <a *ngIf="!token" [routerLink]="['/login']" class="logo">login</a>
         </div>
+
         <div class="sides">
             <a [routerLink]="['/about']" class="menu"></a>
         </div>
+
         <div class="info">
             <h4><a href="https://github.com/Lycsona">My github</a></h4>
             <h1 class="header-text">Welcome to my blog</h1>

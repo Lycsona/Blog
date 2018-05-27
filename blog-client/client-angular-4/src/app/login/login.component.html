@@ -1,0 +1,19 @@
+<div class="container container-main">
+    <div class="well well-lg float-none row wow fadeIn" data-wow-delay="0.2s">
+
+        <form class="form-group">
+            <label class="control-label" for="login_input">Login</label>
+            <input type="text" id="login_input"
+                   (ngModelChange)="onChange($event, 'login')"
+                   [(ngModel)]="login" name="login">
+        </form>
+        <form class="form-group">
+            <label class="control-label" for="password_input">Password</label>
+            <input type="password" id="password_input"
+                   (ngModelChange)="onChange($event, 'pass')"
+                   [(ngModel)]="password" name="password">
+        </form>
+        <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>
+
+    </div>
+</div>

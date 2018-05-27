@@ -4,6 +4,8 @@ import {AboutComponent} from "./about";
 import {NoContentComponent} from "./no-content";
 import {ArticleComponent} from "./article/article.component";
 import {ListOfArticles} from "./list-of-article/list-of-articles.component";
+import {AuthGuard} from "./util/auth-guard";
+import {LoginComponent} from "./login/login.component";
 
 export const ROUTES: Routes = [
     {path: '', component: HomeComponent},
@@ -11,5 +13,7 @@ export const ROUTES: Routes = [
     {path: 'about', component: AboutComponent},
     {path: 'article/:id', component: ArticleComponent},
     {path: 'list-of-articles/tag/:tag-id', component: ListOfArticles},
+    {path: 'login', component: LoginComponent},
+    {path: 'admin', loadChildren: './+admin#AdminModule', canActivate: [AuthGuard]},
     {path: '**', component: NoContentComponent},
 ];

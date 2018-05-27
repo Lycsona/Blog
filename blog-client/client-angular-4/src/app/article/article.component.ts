@@ -17,8 +17,11 @@ export class ArticleComponent implements OnInit {
     public originalArticle: ArticleDto;
     stomp_subscription: any;
 
-    constructor(private appArticleService: AppArticleService, private route: ActivatedRoute,
-                @Inject(DOCUMENT) private document: any, private _stompService: StompService) {
+    constructor(private appArticleService: AppArticleService,
+                private route: ActivatedRoute,
+                private _stompService: StompService,
+                @Inject(DOCUMENT) private document: any
+                ) {
         this.article = new ArticleDto();
         this.originalArticle = new ArticleDto();
     }

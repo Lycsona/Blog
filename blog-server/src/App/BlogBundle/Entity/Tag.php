@@ -43,7 +43,9 @@ class Tag
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="article", mappedBy="tags")
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Article", mappedBy="tags", cascade={"persist"})
      */
     private $articles;
 
@@ -118,28 +120,23 @@ class Tag
     }
 
     /**
-     * Add articles
+     * Add article
      *
-     * @param Article $articles
-     * @return Tag
+     * @param Article $article
      */
-    public function addArticle(Article $articles)
+    public function addArticle(Article $article)
     {
-        if (!$this->articles->contains($articles)) {
-            $this->articles[] = $articles;
-            $articles->addTag($this);
-        }
-
-        return $this;
+        $this->articles[] = $article;
     }
 
     /**
      * Remove articles
      *
-     * @param Article $articles
+     * @param Article $article
      */
-    public function removeArticle(Article $articles)
+    public function removeArticle(Article $article)
     {
-        $this->articles->removeElement($articles);
+        $this->articles->removeElement($article);
+        $article->removeTag($this);
     }
 }

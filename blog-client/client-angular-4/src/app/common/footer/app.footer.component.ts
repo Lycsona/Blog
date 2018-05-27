@@ -11,7 +11,7 @@ export class AppFooterComponent {
 
 
     constructor() {
-        this.author = "Ostashevskaya Maria";
+        this.author = "Vain Maria";
         this.year = 2018;
     }
 }

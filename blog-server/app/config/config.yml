@@ -8,6 +8,9 @@ parameters:
 
 framework:
     secret: '%secret%'
+    session:
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
         strict_requirements: ~
@@ -18,15 +21,12 @@ framework:
     templating:
         engines: ['twig']
     default_locale: '%locale%'
-    trusted_hosts: ~
-    session:
-        handler_id: session.handler.native_file
-        save_path: "%kernel.root_dir%/sessions"
     fragments: ~
     http_method_override: true
     assets: ~
     php_errors:
         log: true
+    translator: { fallbacks: ["%locale%"] }
 
 twig:
     debug: '%kernel.debug%'
@@ -60,7 +60,10 @@ swiftmailer:
     password: '%mailer_password%'
     spool: { type: memory }
 
-nelmio_api_doc: ~
+nelmio_api_doc:
+    sandbox:
+        request_format:
+            method: accept_header
 
 nelmio_cors:
         defaults:
@@ -117,3 +120,63 @@ old_sound_rabbit_mq:
             queue_options:    {name: 'page-views'}
             callback:         page_views_consumer
             enable_logger: true
+
+fos_rest:
+  param_fetcher_listener: true
+  body_listener: true
+  routing_loader:
+    include_format: false
+  format_listener:
+    enabled: true
+  view:
+    view_response_listener: 'force'
+    formats:
+      json: true
+    templating_formats:
+        json: true
+    force_redirects:
+      html: true
+    failed_validation: HTTP_BAD_REQUEST
+    default_engine: twig
+  serializer:
+    serialize_null: true
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: api
+    user_class: App\BlogBundle\Entity\User
+    from_email:
+        address: "%mailer_address%"
+        sender_name: "%mailer_user%"
+
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Application\Migrations
+    table_name: migration_versions
+    name: Application Migrations
+    organize_migrations: false # Version >= 1.2, possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+    custom_template: ~ # Version >= 1.2, path to your custom migrations template
+
+lexik_jwt_authentication:
+    private_key_path: '%jwt_private_key_path%'
+    public_key_path:  '%jwt_public_key_path%'
+    pass_phrase:      '%jwt_key_pass_phrase%'
+    token_ttl:        '%jwt_token_ttl%'
+    encoder:
+        # token encoder/decoder service - default implementation based on the namshi/jose library
+        service: lexik_jwt_authentication.encoder.default
+        # crypto engine used by the encoder service
+        crypto_engine: openssl
+        # encryption algorithm used by the encoder service
+        signature_algorithm: RS256
+    token_extractors:
+        authorization_header:      # look for a token as Authorization Header
+            enabled: true
+            prefix:  Bearer
+            name:    Authorization
+        cookie:                    # check token in a cookie
+            enabled: false
+            name:    BEARER
+        query_parameter:           # check token in query string parameter
+            enabled: false
+            name:    bearer
