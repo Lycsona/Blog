@@ -42,10 +42,11 @@ export class LoginComponent implements OnInit {
 
                 if (decodedToken.roles.includes('ROLE_ADMIN')) {
                     localStorage.setItem("mv_token_odsfkgsmkn4nkwkjk2nn3", token);
+                    localStorage.setItem("mv_admin", true);
                     this.changeLoginButton();
-
                     this.router.navigate(['/admin']);
                 }else{
+                    localStorage.setItem("mv_admin", false);
                     this.router.navigate(['/home']);
                 }
             }, CommonUtil.handleError)

@@ -19,6 +19,7 @@ export class AppLogoutService {
             .post(LOGOUT, '', CommonUtil.getContentTypeUrlEncoded())
             .map((res: Response) => {
                 localStorage.removeItem("mv_token_odsfkgsmkn4nkwkjk2nn3");
+                localStorage.setItem("mv_admin", false);
                 return res;
             })
             .catch(CommonUtil.handleError);
