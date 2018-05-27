@@ -2,15 +2,11 @@
 
 namespace App\BlogBundle\Service\Impl;
 
-use App\BlogBundle\AppBlogBundle;
 use App\BlogBundle\AppBlogBundleEvents;
-use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
-use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
-use App\BlogBundle\Repository\TagRepository;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
 use App\BlogBundle\Service\FileUploader;
@@ -21,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ArticleServiceImpl implements ArticlesService
 {
@@ -104,7 +101,8 @@ class ArticleServiceImpl implements ArticlesService
         }
 
         if ($form->getData()->getImage()) {
-            $article->setImage($this->fileUploader->upload($form->getData()->getImage()));
+            $uploadedFile = $this->fileUploader->upload($form->getData()->getImage());
+            $article->setImage($uploadedFile);
         }
 
         foreach ($tags as $tag) {

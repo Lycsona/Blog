@@ -15,4 +15,4 @@ services:
     file_uploader:
         class: App\BlogBundle\Service\Impl\FileUploaderImpl
         arguments:
-            $targetDir: '/Users/mary/Sites/blog/blog-client/client-angular-4/src/assets/image'
+            $targetDir: '/Users/mary/Sites/blog/blog-client/client-angular-4/src/assets/image/'

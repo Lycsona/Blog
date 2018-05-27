@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Meta} from "@angular/platform-browser";
 import {AppTagService} from "../../service/app.tag.service";
+import {Md5} from "ts-md5/dist/md5";
 
 @Component({
     selector: 'create-article',
@@ -19,6 +20,7 @@ export class CreateArticleComponent implements OnInit {
     private model: ArticleDto;
     private tags: TagDto[];
     private selectedTags: TagDto[];
+    private selectedImage;
     private patternNoSpace = /^\S*$/;
 
     formErrors: any;
@@ -78,17 +80,24 @@ export class CreateArticleComponent implements OnInit {
 
     public onFileChange(event) {
         let reader = new FileReader();
-        if(event.target.files && event.target.files.length > 0) {
+        if (event.target.files && event.target.files.length > 0) {
             let file = event.target.files[0];
             reader.readAsDataURL(file);
             reader.onload = () => {
                 this.model.image = {
-                    filename: file.name,
+
+                    filename: Md5.hashStr(file.name) + '.' + file.name.split('.')[1],
                     filetype: file.type,
                     value: reader.result.split(',')[1]
-                }
+                };
+                this.selectedImage = reader.result;
             };
         }
+    }
+
+    public clearFile() {
+        this.createArticleForm.get('image').setValue(null);
+        this.selectedImage = '';
     }
 
     private onValueChanged(data?: any) {
@@ -117,7 +126,7 @@ export class CreateArticleComponent implements OnInit {
 
         this.appArticleService.saveArticle(this.model)
             .subscribe((res: any) => {
-             //   this.router.navigate(['/']);
+                //   this.router.navigate(['/']);
             }, CommonUtil.handleError)
     }
 
@@ -134,11 +143,6 @@ export class CreateArticleComponent implements OnInit {
                 });
 
             }, CommonUtil.handleError)
-    }
-
-    clearFile() {
-        this.createArticleForm.get('image').setValue(null);
-        this.fileInput.nativeElement.value = '';
     }
 
     onChange(e) {

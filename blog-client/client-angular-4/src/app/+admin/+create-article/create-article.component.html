@@ -15,14 +15,19 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" for="image">Upload image</label>
-            <input id="image" class="form-control" type="file" (change)="onFileChange($event)" accept=".jpeg,.png"  #fileInput>
-        </div>
+            <div *ngIf="!selectedImage">
+                <input class="form-control"
+                       style="display: none"
+                       type="file" (change)="onFileChange($event)" accept=".jpeg,.png"
+                       #fileInput>
+                <button class="btn btn-md btn-info" (click)="fileInput.click()">Select File</button>
+            </div>
 
-
-        <div class="row">
-            <div class="pull-right">
-                <button type="button" class="btn btn-sm btn-warning" (click)="clearFile()">Clear file</button>
+            <div *ngIf="selectedImage">
+                <img src="{{selectedImage}}" width="100">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-md btn-warning" (click)="clearFile()">Clear file</button>
+                </div>
             </div>
         </div>
 
