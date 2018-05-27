@@ -3,13 +3,13 @@
 
         <form class="form-group">
             <label class="control-label" for="login_input">Login</label>
-            <input type="text" class="form-control" id="login_input"
+            <input type="text" id="login_input"
                    (ngModelChange)="onChange($event, 'login')"
                    [(ngModel)]="login" name="login">
         </form>
         <form class="form-group">
             <label class="control-label" for="password_input">Password</label>
-            <input type="password" class="form-control" id="password_input"
+            <input type="password" id="password_input"
                    (ngModelChange)="onChange($event, 'pass')"
                    [(ngModel)]="password" name="password">
         </form>
