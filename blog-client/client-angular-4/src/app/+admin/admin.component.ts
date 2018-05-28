@@ -16,10 +16,12 @@ export class AdminComponent implements OnInit {
     }
 
     public ngOnInit() {
-
+        if (!localStorage.getItem("mv_token_odsfkgsmkn4nkwkjk2nn3")) {
+            this.router.navigate(['/login']);
+        }
     }
 
     public clearAllCaches() {
-      //  this.appCacheService.clearAllCaches().subscribe();
+        //  this.appCacheService.clearAllCaches().subscribe();
     }
 }

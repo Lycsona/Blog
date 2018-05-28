@@ -1,19 +1,12 @@
 import {Headers, RequestOptions, Response} from "@angular/http";
 import {Observable} from "rxjs";
 import {Router} from "@angular/router";
+import {location} from "ngx-bootstrap/utils/facade/browser";
 
 export const apiPrefix = 'http://blog.loc';
 export const pageTitle = 'Maria Vain';
 
 export class CommonUtil {
-    private static router: Router;
-
-    constructor(private router: Router) {
-    }
-
-    static redirectTo(route) {
-        this.router.navigate([route]);
-    }
 
     public static getApiAddress(): string {
         const hostname = location.hostname;
@@ -28,9 +21,10 @@ export class CommonUtil {
     }
 
     static handleError(error: Response) {
+        console.log(error);
         // in a real world app, we may send the server to some remote logging infrastructure
         // instead of just logging it to the console
-        console.error(error);
+        console.error(error.status);
         if (error.status == 401 || (error.url && error.url.includes('api/login'))) {
             localStorage.removeItem("mv_token_odsfkgsmkn4nkwkjk2nn3");
             localStorage.setItem("mv_admin", false);
