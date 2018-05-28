@@ -23,7 +23,8 @@
                     <div class="list-group-item-text">
                         <div class="btn-toolbar">
                             <div class="btn-group">
-
+                                <a [routerLink]=" ['/admin/update-article', article.id] "
+                                   class="btn btn-info">update</a>
                                 <a (click)="onDelete(article.id)" class="btn btn-warning">delete</a>
                             </div>
                         </div>

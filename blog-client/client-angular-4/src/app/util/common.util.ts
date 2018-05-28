@@ -12,7 +12,7 @@ export class CommonUtil {
         const hostname = location.hostname;
         const port = ':3000'; //    TODO find a way
         const protocol = location.protocol;
-        return protocol + '//' + hostname + port + '/api';
+        return protocol + '//' + hostname + port + '/';
     }
 
     static extractData(res: Response, defaultValue: any = {}) {

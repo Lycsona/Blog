@@ -9,36 +9,15 @@
         <div class="form-group label-floating row m-b-2">
             <label class="control-label" for="title_input">Title</label>
             <input class="form-control input-lg" id="title_input" type="text"
-                   [(ngModel)]="model.title"
-                   [formControl]="updateArticleForm.controls['title']" required>
-            <div *ngIf="formErrors.title" class="form-error color-lightcoral">{{formErrors.title}}</div>
-        </div>
-        <div class="form-group label-floating row m-b-2">
-            <label class="control-label" for="url_title_input">Url Title</label>
-            <input class="form-control input-lg" id="url_title_input" type="text"
-                   [(ngModel)]="model.urlTitle"
-                   [pattern]="patternNoSpace"
-                   [formControl]="updateArticleForm.controls['urlTitle']" required>
-            <div *ngIf="formErrors.urlTitle" class="form-error color-lightcoral">{{formErrors.urlTitle}}</div>
-        </div>
-        <div class="form-group label-floating">
-            <label class="control-label" for="summary_input">Summary</label>
-            <input class="form-control input-lg" type="text" id="summary_input"
-                   [(ngModel)]="model.summary"
-                   [formControl]="updateArticleForm.controls['summary']" required>
-            <div *ngIf="formErrors.summary" class="form-error color-lightcoral">{{formErrors.summary}}</div>
+                   [(ngModel)]="model.name"
+                   [formControl]="updateArticleForm.controls['name']" required>
+            <div *ngIf="formErrors.name" class="form-error color-lightcoral">{{formErrors.name}}</div>
         </div>
         <div class="row m-b-2 m-t-2">
             <ckeditor
                     [(ngModel)]="model.content"
                     debounce="500">
             </ckeditor>
-        </div>
-        <div class="form-group label-floating">
-            <label class="control-label" for="footer_input">Footer</label>
-            <input class="form-control input-lg" type="text" id="footer_input" [(ngModel)]="model.footer"
-                   [formControl]="updateArticleForm.controls['footer']" required>
-            <div *ngIf="formErrors.footer" class="form-error color-lightcoral">{{formErrors.footer}}</div>
         </div>
         <div class="row">
             <div class="pull-right">
@@ -54,7 +33,7 @@
                 <select id="tags" multiple="" class="form-control"
                         size="{{tags.length}}" [(ngModel)]="selectedTags">
                     <option *ngFor="let tag of tags" [ngValue]="tag">
-                        {{tag.tagTitle}}
+                        {{tag.name}}
                     </option>
                 </select>
             </div>
@@ -62,7 +41,7 @@
             <div class="row">
                 <p>Current tags:</p>
                 <span *ngFor="let selectedTag of model.tags;" class="label label-default m-l-1">
-                    {{selectedTag.tagTitle}}
+                    {{selectedTag.name}}
                 </span>
             </div>
         </div>
@@ -73,8 +52,8 @@
                 <image-upload
                         [max]="1"
                         [url]="imgUploadUrl"
-                        [buttonCaption]="'Select Images!'"
-                        [dropBoxMessage]="'Drop your images here!'"
+                        [buttonCaption]="'Select Image!'"
+                        [dropBoxMessage]="'Drop your image here!'"
                         (isPending)="disableSendButton($event)"
                 ></image-upload>
             </div>
