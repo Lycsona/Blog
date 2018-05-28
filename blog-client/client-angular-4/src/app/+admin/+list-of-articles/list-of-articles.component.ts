@@ -11,10 +11,16 @@ import {Meta} from "@angular/platform-browser";
 export class ListOfArticlesComponent implements OnInit {
 
     private articles: ArticleDto[];
+    pageNo: number = 0;
+    pageSize: number = 5;
+    pageTotal: number[];
+    isFirst: boolean;
+    isLast: boolean;
 
     constructor(private appArticleService: AppArticleService, private meta: Meta) {
         this.meta.addTag({name: 'robots', content: 'noindex'});
         this.articles = [];
+        this.pageTotal = [];
     }
 
     public ngOnInit() {
@@ -22,37 +28,36 @@ export class ListOfArticlesComponent implements OnInit {
     }
 
     private getArticles() {
-        // this.appArticleService.getAllArticles()
-        //     .subscribe((res: any) => {
-        //         let jsonArray = JSON.parse(res._body);
-        //         this.articles = [];
-        //
-        //         jsonArray.map(art => {
-        //             let article = new ArticleDto();
-        //             article.id = art.id;
-        //             article.createAt = art.createAt;
-        //             article.updatedAt = art.updatedAt;
-        //             article.title = art.title;
-        //             article.urlTitle = art.urlTitle;
-        //             article.summary = art.summary;
-        //             article.content = art.content;
-        //             article.footer = art.footer;
-        //             article.isSubArticle = art.subArticle;
-        //             article.language = art.language;
-        //
-        //             this.articles.push(article);
-        //         });
-        //
-        //     }, CommonUtil.handleError)
+        this.appArticleService.getArticles(this.pageNo, this.pageSize)
+            .subscribe((res: any) => {
+                let jsonArray = JSON.parse(res._body);
+                this.pageTotal = new Array(jsonArray.totalPages);
+                this.isFirst = jsonArray.firstPage;
+                this.isLast = jsonArray.lastPage;
+                this.articles = [];
+
+                jsonArray.articles.map((art) => {
+                    let article = new ArticleDto();
+                    article.id = art.id;
+                    article.name = art.name;
+                    article.content = art.content;
+                    article.createdAt = art.createdAt;
+                    article.updatedAt = art.updatedAt;
+                    article.tags = art.tags;
+                    article.image = art.image;
+
+                    this.articles.push(article);
+                });
+            }, CommonUtil.handleError);
     }
 
-    private deleteArticle(id: string) {
-        // this.appArticleService.deleteArticleById(id)
-        //     .subscribe((res: any) => {
-        //     }, CommonUtil.handleError)
+    private deleteArticle(id) {
+        this.appArticleService.deleteArticleById(id)
+            .subscribe((res: any) => {
+            }, CommonUtil.handleError)
     }
 
     onDelete(id: string) {
-        // this.deleteArticle(id);
+        this.deleteArticle(id);
     }
 }

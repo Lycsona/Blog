@@ -53,4 +53,15 @@ export class AppArticleService {
             })
             .catch(CommonUtil.handleError);
     }
+
+    public deleteArticleById(id: number) {
+        let headers = CommonUtil.getAuthorizationHeader();
+
+        return this.http
+            .delete(`${ARTICLE}` + '/' + id, '', headers)
+            .map((res: Response) => {
+                return res;
+            })
+            .catch(CommonUtil.handleError);
+    }
 }
