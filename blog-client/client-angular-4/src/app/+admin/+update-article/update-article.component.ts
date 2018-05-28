@@ -48,6 +48,9 @@ export class UpdateArticleComponent implements OnInit {
     };
 
     public ngOnInit() {
+        if (!localStorage.getItem("mv_token_odsfkgsmkn4nkwkjk2nn3")) {
+            this.router.navigate(['/login']);
+        }
         this.getAllTags();
         this.getArticle();
         this.buildForm();
