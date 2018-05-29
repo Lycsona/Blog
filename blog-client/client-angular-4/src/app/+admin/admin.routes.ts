@@ -7,6 +7,7 @@ export const routes = [
         {path: 'create-article', loadChildren: './+create-article#CreateArticleModule'},
         {path: 'update-article/:id', loadChildren: './+update-article#UpdateArticleModule'},
         {path: 'list-of-articles', loadChildren: './+list-of-articles#ListOfArticlesModule'},
-    ]
+        {path: 'manage-tags', loadChildren: './+manage-tags#ManageTagsModule'},
+      ]
     },
 ];
