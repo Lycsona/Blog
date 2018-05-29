@@ -30,6 +30,15 @@ services:
               '@file_uploader'
               ]
 
+    tag:
+        class: App\BlogBundle\Service\Impl\TagServiceImpl
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@form.factory',
+              '@event_dispatcher',
+              '@serializer'
+              ]
+
     page_views:
         class: App\BlogBundle\Service\Impl\PageViewsImpl
         arguments: [
