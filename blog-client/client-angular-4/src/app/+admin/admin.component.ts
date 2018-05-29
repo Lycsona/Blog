@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Title} from "./title";
 import {Meta} from "@angular/platform-browser";
 import {ActivatedRoute, Router} from "@angular/router";
-// import {AppCacheService} from "../service/app.cache.service";
+import {AppCacheService} from "../service/app.cache.service";
 
 @Component({
     selector: 'admin',
@@ -11,8 +11,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class AdminComponent implements OnInit {
 
     constructor(private meta: Meta,
-                private router: Router
-                // private appCacheService: AppCacheService
+                private router: Router,
+                private appCacheService: AppCacheService
     ) {
         this.meta.addTag({name: 'robots', content: 'noindex'});
     }
@@ -24,6 +24,6 @@ export class AdminComponent implements OnInit {
     }
 
     public clearAllCaches() {
-        //  this.appCacheService.clearAllCaches().subscribe();
+         this.appCacheService.clearAllCaches().subscribe();
     }
 }

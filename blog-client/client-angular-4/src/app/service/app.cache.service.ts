@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
-import {CommonUtil} from '../util/common.util';
+import {apiPrefix, CommonUtil} from '../util/common.util';
 
-const CACHE = CommonUtil.getApiAddress().concat('/cache');
+const CACHE = apiPrefix.concat('/api/cache');
 
 @Injectable()
 export class AppCacheService {
@@ -12,7 +12,7 @@ export class AppCacheService {
     }
 
     public clearAllCaches(): Observable<Response> {
-        return this.http.post(`${CACHE}/clear`, null, CommonUtil.getContentTypeJson())
+        return this.http.post(`${CACHE}`.concat('/clear'), null, CommonUtil.getAuthorizationHeader())
             .map((res: Response) => {
                 return res;
             })

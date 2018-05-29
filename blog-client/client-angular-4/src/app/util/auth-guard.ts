@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
 
 
     canActivate() {
-        if (localStorage.getItem('mv_admin')) {
+        if (localStorage.getItem('mv_admin') && localStorage.getItem("mv_token_odsfkgsmkn4nkwkjk2nn3")) {
             return true;
         }
 

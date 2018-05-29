@@ -87,4 +87,9 @@ class CacheServiceImpl implements CacheService
             $this->cache->deleteItem($tagKey);
         }
     }
+
+    public function deleteAllCache()
+    {
+        $this->cache->clear();
+    }
 }
