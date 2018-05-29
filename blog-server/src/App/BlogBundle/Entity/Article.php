@@ -181,6 +181,15 @@ class Article
         $this->tags->removeElement($tag);
     }
 
+    public function removeTags()
+    {
+        if (!empty($this->tags)) {
+            foreach ($this->tags as $tag) {
+                $this->removeTag($tag);
+            }
+        }
+    }
+
     /**
      * @return ArrayCollection
      */

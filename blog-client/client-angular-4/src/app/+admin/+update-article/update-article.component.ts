@@ -7,6 +7,8 @@ import {TagDto} from "../../dto/TagDto";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Meta} from "@angular/platform-browser";
 import {AppTagService} from "../../service/app.tag.service";
+import {Md5} from "ts-md5";
+
 
 @Component({
     selector: 'update-article',
@@ -17,7 +19,7 @@ export class UpdateArticleComponent implements OnInit {
     private model: ArticleDto;
     private tags: TagDto[];
     private selectedTags: TagDto[];
-    private imgUploadUrl: string;
+    private selectedImage: string;
     private patternNoSpace = /^\S*$/;
     formErrors: any;
     updateArticleForm: FormGroup;
@@ -33,7 +35,7 @@ export class UpdateArticleComponent implements OnInit {
         this.model = new ArticleDto();
         this.tags = [];
         this.selectedTags = [];
-        this.imgUploadUrl = "";
+        this.selectedImage = "";
     }
 
     readonly validationMessages = {
@@ -44,7 +46,7 @@ export class UpdateArticleComponent implements OnInit {
         },
         'content': {
             'required': 'Required',
-        }
+        },
     };
 
     public ngOnInit() {
@@ -72,6 +74,7 @@ export class UpdateArticleComponent implements OnInit {
                     this.model.content = jsonArray.content;
                     this.model.image = jsonArray.image;
                     this.model.tags = jsonArray.tags;
+                    this.selectedImage =  'assets/image/' + jsonArray.image;
 
                     this._changeDetectionRef.detectChanges();
                 }, CommonUtil.handleError)
@@ -96,7 +99,8 @@ export class UpdateArticleComponent implements OnInit {
                 [
                     Validators.required,
                 ]
-            ]
+            ],
+            'image': [this.model.image]
         });
 
         this.updateArticleForm.valueChanges
@@ -126,6 +130,28 @@ export class UpdateArticleComponent implements OnInit {
         }
     }
 
+  public onFileChange(event) {
+    let reader = new FileReader();
+    if (event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.model.image = {
+
+          filename: Md5.hashStr(file.name) + '.' + file.name.split('.')[1],
+          filetype: file.type,
+          value: reader.result.split(',')[1]
+        };
+        this.selectedImage = reader.result;
+      };
+    }
+  }
+
+  public clearFile() {
+    this.updateArticleForm.get('image').setValue(null);
+    this.selectedImage = '';
+  }
+
     private getAllTags() {
         this.appTagsService.getAllTags()
             .subscribe((res: any) => {
@@ -146,10 +172,10 @@ export class UpdateArticleComponent implements OnInit {
     public onSubmit() {
         this.model.tags = this.selectedTags;
         console.log(this.model);
-        // this.appArticleService.updateArticle(this.model)
-        //     .subscribe((res: any) => {
-        //         this.router.navigate(['/']);
-        //     }, CommonUtil.handleError)
+        this.appArticleService.updateArticle(this.model)
+            .subscribe((res: any) => {
+                this.router.navigate(['/admin/list-of-articles']);
+            }, CommonUtil.handleError)
     }
 
     public disableSendButton(e) {

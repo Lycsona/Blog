@@ -120,12 +120,34 @@ class ArticleServiceImpl implements ArticlesService
     public function editArticle($request, $id)
     {
         $article = $this->em->getRepository(Article::class)->find($id);
+        if (!$article) {
+            return $this->getException(Response::HTTP_NOT_FOUND, AppBlogBundleEvents::GET_ENTITY_ERROR, ['id' => $id]);
+        }
+
+        $oldImage = $article->getImage();
+
+        $params = $request->request->all();
+        $tags = $request->request->get('tags');
+        unset($params['tags']);
 
         $form = $this->formFactory->create(ArticleType::class, $article, array('method' => 'POST'));
-        $form->handleRequest($request);
-        if ($article && $form->isSubmitted()) {
-            $article->setImage($this->fileUploader->upload($form->getData()->getImage()));
+        $form->submit($params);
+        if ($form->isValid()) {
+
             $article->setUpdatedAt(new \DateTime());
+
+            $newImage = $form->getData()->getImage();
+            if ($newImage && is_array($newImage)) {
+                $this->fileUploader->delete($oldImage);
+                $uploadedFile = $this->fileUploader->upload($newImage);
+                $article->setImage($uploadedFile);
+            }
+
+            $article->removeTags();
+            foreach ($tags as $tag) {
+                $tagEntity = $this->em->getRepository(Tag::class)->findOneBy(['id' => $tag['id']]);
+                $article->addTag($tagEntity);
+            }
 
             $this->em->persist($article);
             $this->em->flush();
@@ -136,15 +158,7 @@ class ArticleServiceImpl implements ArticlesService
             return JsonResponse::create(['message' => sprintf('Article updated.')], Response::HTTP_OK);
         }
 
-        $exception = '';
-        if (!$article) {
-            $exception = $this->getException(Response::HTTP_NOT_FOUND, AppBlogBundleEvents::GET_ENTITY_ERROR, ['id' => $id]);
-        }
-        if (!$form->isSubmitted()) {
-            $exception = $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
-        }
-
-        return $exception;
+        return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
     }
 
     public function deleteArticle($id)
