@@ -16,10 +16,18 @@ class FileUploaderImpl implements FileUploader
 
     public function upload($data)
     {
-        file_put_contents($this->getTargetDir() . $data['filename'],  base64_decode($data['value']));
+        file_put_contents($this->getTargetDir() . $data['filename'], base64_decode($data['value']));
 
         return $data['filename'];
     }
+
+    public function delete($fileName)
+    {
+        if (file_exists($this->getTargetDir() . $fileName)) {
+            unlink($this->getTargetDir() . $fileName);
+        }
+    }
+
 
     public function getTargetDir()
     {

@@ -2,19 +2,12 @@
 
 namespace App\BlogBundle\Controller;
 
-use App\BlogBundle\AppBlogBundleEvents;
-use App\BlogBundle\DTO\TagDTO;
-use App\BlogBundle\Entity\Tag;
-use App\BlogBundle\Event\ApiExceptionEvent;
-use App\BlogBundle\Factory\ModelFactory;
-use App\BlogBundle\Form\TagType;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class TagController extends Controller
@@ -37,15 +30,7 @@ class TagController extends Controller
      */
     public function getAllTagAction()
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entities = $entityManager->getRepository(Tag::class)->findAll();
-        $tags = $this->get('serializer')->serialize(
-            $entities,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($tags, Response::HTTP_OK);
+        return $this->get('tag')->getTags();
     }
 
     /**
@@ -67,23 +52,7 @@ class TagController extends Controller
      */
     public function getTagByIdAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Tag::class)->find($id);
-        if (!$entity) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityJson = $this->get('serializer')->serialize(
-            $entity,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+        return $this->get('tag')->getTagById($id);
     }
 
     /**
@@ -109,23 +78,7 @@ class TagController extends Controller
      */
     public function createTagAction(Request $request)
     {
-        $tagDTO = ModelFactory::createTag(new TagDTO());
-
-        $form = $this->createForm(TagType::class, $tagDTO);
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
-            $dispatcher->dispatch(AppBlogBundleEvents::CREATE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($tagDTO);
-        $entityManager->flush();
-
-        return JsonResponse::create(['message' => sprintf('Tag created.')], Response::HTTP_CREATED);
+        return $this->get('tag')->createTag($request);
     }
 
     /**
@@ -153,32 +106,7 @@ class TagController extends Controller
      */
     public function editTagAction(Request $request, $id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $dispatcher = $this->get('event_dispatcher');
-
-        $entity = $entityManager->getRepository(Tag::class)->find($id);
-        if (!$entity) {
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::GET_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $form = $this->createForm(TagType::class, $entity, array('method' => 'PUT'));
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            $event = new ApiExceptionEvent(Response::HTTP_BAD_REQUEST, ['form' => $form]);
-            $dispatcher->dispatch(AppBlogBundleEvents::UPDATE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager->persist($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Tag updated.')],
-            Response::HTTP_OK);
+        return $this->get('tag')->editTag($request, $id);
     }
 
     /**
@@ -201,22 +129,6 @@ class TagController extends Controller
      */
     public function deleteTagAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Tag::class)->find($id);
-        if (!$entity) {
-            $dispatcher = $this->get('event_dispatcher');
-            $event = new ApiExceptionEvent(Response::HTTP_NOT_FOUND, ['id' => $id]);
-            $dispatcher->dispatch(AppBlogBundleEvents::DELETE_ENTITY_ERROR, $event);
-
-            return $event->getResponse();
-        }
-
-        $entityManager->remove($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Tag deleted.'),
-            Response::HTTP_OK]);
+        return $this->get('tag')->deleteTag($id);
     }
 }

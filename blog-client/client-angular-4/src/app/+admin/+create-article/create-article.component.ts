@@ -51,6 +51,9 @@ export class CreateArticleComponent implements OnInit {
     public ngOnInit() {
         this.getAllTags();
         this.buildForm();
+        if (!localStorage.getItem("mv_token_odsfkgsmkn4nkwkjk2nn3")) {
+            this.router.navigate(['/login']);
+        }
     }
 
     private buildForm(): void {

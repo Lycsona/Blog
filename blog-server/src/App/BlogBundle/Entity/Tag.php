@@ -139,4 +139,12 @@ class Tag
         $this->articles->removeElement($article);
         $article->removeTag($this);
     }
+
+    /**
+     * @param ArrayCollection $articles
+     */
+    public function setArticles(ArrayCollection $articles)
+    {
+        $this->articles = $articles;
+    }
 }
