@@ -58,7 +58,7 @@ export class AppArticleService {
         let headers = CommonUtil.getAuthorizationHeader();
 
         return this.http
-            .delete(`${ARTICLE}` + '/' + id, '', headers)
+            .delete(`${ARTICLE}` + '/' + id, headers)
             .map((res: Response) => {
                 return res;
             })

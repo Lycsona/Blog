@@ -27,7 +27,7 @@ export class CommonUtil {
         console.error(error.status);
         if (error.status == 401 || (error.url && error.url.includes('api/login'))) {
             localStorage.removeItem("mv_token_odsfkgsmkn4nkwkjk2nn3");
-            localStorage.setItem("mv_admin", false);
+            localStorage.removeItem("mv_admin");
         }
         // return Observable.throw(error.json().error || 'Server error');
         return Observable.throw(error || 'Server error');
@@ -42,8 +42,7 @@ export class CommonUtil {
 
     static getContentTypeJson(): RequestOptions {
         let headers = new Headers({
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
         });
         return new RequestOptions({headers: headers});
     }

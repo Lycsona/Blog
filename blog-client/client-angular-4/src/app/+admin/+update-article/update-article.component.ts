@@ -62,7 +62,7 @@ export class UpdateArticleComponent implements OnInit {
                 params['id'] ? resolve(params['id']) : reject("No article found");
             });
         }).then(id => {
-            this.appArticleService.getArticleByUrlId(<number>id)
+            this.appArticleService.getArticleByUrlId(<string>id)
                 .subscribe((res: any) => {
                     let jsonArray = JSON.parse(res._body);
                     this.model.id = jsonArray.id;
@@ -85,7 +85,7 @@ export class UpdateArticleComponent implements OnInit {
         };
 
         this.updateArticleForm = this.fb.group({
-            'name': [this.model.title,
+            'name': [this.model.name,
                 [
                     Validators.required,
                     Validators.minLength(2),
