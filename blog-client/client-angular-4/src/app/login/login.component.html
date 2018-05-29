@@ -1,5 +1,6 @@
 <div class="container container-main">
-    <div class="well well-lg float-none row wow fadeIn" data-wow-delay="0.2s">
+  <div class="flex-center">
+    <div class="well well-lg float-none row wow fadeIn col-lg-6" data-wow-delay="0.2s">
 
         <form class="form-group">
             <label class="control-label" for="login_input">Login</label>
@@ -14,6 +15,6 @@
                    [(ngModel)]="password" name="password">
         </form>
         <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>
-
     </div>
+  </div>
 </div>
