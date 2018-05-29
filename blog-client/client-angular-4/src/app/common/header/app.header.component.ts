@@ -15,6 +15,7 @@ import {AppSharedService} from '../../service/app.shared.service';
 export class AppHeaderComponent {
     private _headerImage: string;
     public token: boolean;
+    public admin: boolean;
 
     private author: string;
     private year: number;
@@ -26,6 +27,7 @@ export class AppHeaderComponent {
         this.author = "Vain Maria";
         this.year = 2018;
         this.token = !!localStorage.getItem('mv_token_odsfkgsmkn4nkwkjk2nn3');
+        this.admin = !!localStorage.getItem('mv_admin');
     }
 
     ngOnInit() {
