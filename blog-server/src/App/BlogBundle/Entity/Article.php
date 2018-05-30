@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\BlogBundle\Repository\ArticleRepository")
@@ -26,12 +27,15 @@ class Article
     /**
      * @ORM\Column(type="string", unique=true)
      * @JMS\Groups("list")
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, max=100)
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=3000)
      * @JMS\Groups("list")
+     * @Assert\Length(max=3000)
      */
     private $content;
 

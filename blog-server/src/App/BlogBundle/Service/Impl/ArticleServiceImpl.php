@@ -3,9 +3,11 @@
 namespace App\BlogBundle\Service\Impl;
 
 use App\BlogBundle\AppBlogBundleEvents;
+use App\BlogBundle\DTO\ArticleDTO;
 use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
+use App\BlogBundle\Factory\ModelFactory;
 use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
@@ -17,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ArticleServiceImpl implements ArticlesService
 {
@@ -35,6 +37,8 @@ class ArticleServiceImpl implements ArticlesService
 
     private $fileUploader;
 
+    private $validator;
+
     public function __construct(
         EntityManager $em,
         PaginatorService $pagination,
@@ -42,7 +46,8 @@ class ArticleServiceImpl implements ArticlesService
         FormFactory $formFactory,
         TraceableEventDispatcher $dispatcher,
         Serializer $serializer,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        ValidatorInterface $validator
     )
     {
         $this->em = $em;
@@ -52,6 +57,7 @@ class ArticleServiceImpl implements ArticlesService
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
         $this->fileUploader = $fileUploader;
+        $this->validator = $validator;
     }
 
     public function getArticles($page, $size)
@@ -88,26 +94,17 @@ class ArticleServiceImpl implements ArticlesService
 
     public function createArticle($request)
     {
-        $article = new Article();
-        $form = $this->formFactory->create(ArticleType::class, $article);
+        $data = $request->request->all();
+        $data['image'] = is_array($data['image']) ? $this->fileUploader->upload($data['image']) : '';
+        $data['tags'] = $this->em->getRepository(Tag::class)->findBy(['id' => $data['tags']]);
 
-        $params = $request->request->all();
-        $tags = $request->request->get('tags');
-        unset($params['tags']);
+        $articleDTO = (new ArticleDTO())->build($data);
 
-        $form->submit($params);
-        if (!$form->isValid()) {
-            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['form' => $form]);
-        }
+        $article = ModelFactory::createArticle($articleDTO);
 
-        if ($form->getData()->getImage()) {
-            $uploadedFile = $this->fileUploader->upload($form->getData()->getImage());
-            $article->setImage($uploadedFile);
-        }
-
-        foreach ($tags as $tag) {
-            $tagEntity = $this->em->getRepository(Tag::class)->findOneBy(['id' => $tag['id']]);
-            $article->addTag($tagEntity);
+        $errors = $this->validator->validate($article);
+        if (count($errors) > 0) {
+            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['errors' => $errors]);
         }
 
         $this->em->persist($article);
@@ -158,7 +155,7 @@ class ArticleServiceImpl implements ArticlesService
             return JsonResponse::create(['message' => sprintf('Article updated.')], Response::HTTP_OK);
         }
 
-        return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['form' => $form]);
+        return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['errors' => $form]);
     }
 
     public function deleteArticle($id)

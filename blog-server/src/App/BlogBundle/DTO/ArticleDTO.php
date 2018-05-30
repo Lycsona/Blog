@@ -124,7 +124,7 @@ class ArticleDTO
     }
 
     /**
-     * @param array $tags
+     * @param ArrayCollection $tags
      */
     public function setTags($tags)
     {
@@ -161,5 +161,19 @@ class ArticleDTO
     public function setImage($image)
     {
         $this->image = $image;
+    }
+
+    /**
+     * @param array $data
+     * @return ArticleDTO
+     */
+    public function build(array $data)
+    {
+        $this->setName($data['name']);
+        $this->setContent($data['content']);
+        $this->setImage($data['image']);
+        $this->setTags($data['tags']);
+
+        return $this;
     }
 }

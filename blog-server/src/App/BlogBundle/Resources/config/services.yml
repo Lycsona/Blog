@@ -27,7 +27,8 @@ services:
               '@form.factory',
               '@event_dispatcher',
               '@serializer',
-              '@file_uploader'
+              '@file_uploader',
+              '@validator',
               ]
 
     tag:

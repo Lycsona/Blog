@@ -29,7 +29,7 @@ class ApiExceptionListener implements EventSubscriberInterface
 
     public function createEntity(ApiExceptionEvent $event)
     {
-        $errors = $event->getFormErrors($event->getForm());
+        $errors = $event->getValidatorErrors($event->getValidator());
         $statusCode = $event->getStatusCode();
 
         $event->setResponse(JsonResponse::create([
