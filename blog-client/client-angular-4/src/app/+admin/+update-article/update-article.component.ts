@@ -173,11 +173,13 @@ export class UpdateArticleComponent implements OnInit {
     }
 
     public onSubmit() {
+      if(this.updateArticleForm.valid){
         this.model.tags = this.selectedTags;
         this.appArticleService.updateArticle(this.model)
-            .subscribe((res: any) => {
-                this.router.navigate(['/admin/list-of-articles']);
-            }, CommonUtil.handleError)
+          .subscribe((res: any) => {
+            this.router.navigate(['/admin/list-of-articles']);
+          }, CommonUtil.handleError)
+      }
     }
 
     public disableSendButton(e) {
