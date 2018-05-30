@@ -24,7 +24,6 @@ services:
               '@doctrine.orm.entity_manager',
               '@paginator',
               '@cache_redis',
-              '@form.factory',
               '@event_dispatcher',
               '@serializer',
               '@file_uploader',

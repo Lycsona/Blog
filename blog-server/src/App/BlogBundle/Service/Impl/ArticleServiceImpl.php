@@ -8,13 +8,11 @@ use App\BlogBundle\Entity\Article;
 use App\BlogBundle\Entity\Tag;
 use App\BlogBundle\Event\ApiExceptionEvent;
 use App\BlogBundle\Factory\ModelFactory;
-use App\BlogBundle\Form\ArticleType;
 use App\BlogBundle\Service\ArticlesService;
 use App\BlogBundle\Service\CacheService;
 use App\BlogBundle\Service\FileUploader;
 use App\BlogBundle\Service\PaginatorService;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
@@ -43,7 +41,6 @@ class ArticleServiceImpl implements ArticlesService
         EntityManager $em,
         PaginatorService $pagination,
         CacheService $cache,
-        FormFactory $formFactory,
         TraceableEventDispatcher $dispatcher,
         Serializer $serializer,
         FileUploader $fileUploader,
@@ -53,7 +50,6 @@ class ArticleServiceImpl implements ArticlesService
         $this->em = $em;
         $this->pagination = $pagination;
         $this->cache = $cache;
-        $this->formFactory = $formFactory;
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
         $this->fileUploader = $fileUploader;
