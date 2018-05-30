@@ -125,18 +125,20 @@ export class CreateArticleComponent implements OnInit {
     }
 
     public onSubmit() {
+      if(this.createArticleForm.valid) {
         this.model.tags = this.selectedTags;
 
         this.appArticleService.saveArticle(this.model)
-            .subscribe((res: any) => {
-                  this.router.navigate(['/']);
-            },(err) => {
-              let json = JSON.parse(err._body);
+          .subscribe((res: any) => {
+            this.router.navigate(['/']);
+          }, (err) => {
+            let json = JSON.parse(err._body);
 
-              for(let k in json.errors){
-                this.formErrors[k] =  json.errors[k]
-              }
-            })
+            for (let k in json.errors) {
+              this.formErrors[k] = json.errors[k]
+            }
+          })
+      }
     }
 
     private getAllTags() {
