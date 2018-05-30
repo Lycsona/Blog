@@ -74,7 +74,9 @@ export class UpdateArticleComponent implements OnInit {
                     this.model.content = jsonArray.content;
                     this.model.image = jsonArray.image;
                     this.model.tags = jsonArray.tags;
-                    this.selectedImage =  'assets/image/' + jsonArray.image;
+                    if(jsonArray.image){
+                      this.selectedImage =  'assets/image/' + jsonArray.image;
+                    }
 
                     this._changeDetectionRef.detectChanges();
                 }, CommonUtil.handleError)
