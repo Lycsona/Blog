@@ -23,11 +23,10 @@ class FileUploaderImpl implements FileUploader
 
     public function delete($fileName)
     {
-        if (file_exists($this->getTargetDir() . $fileName)) {
+        if (!empty($fileName) && file_exists($this->getTargetDir() . $fileName)) {
             unlink($this->getTargetDir() . $fileName);
         }
     }
-
 
     public function getTargetDir()
     {

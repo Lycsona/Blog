@@ -5,6 +5,7 @@ namespace App\BlogBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 class ApiExceptionEvent extends Event
 {
@@ -67,7 +68,15 @@ class ApiExceptionEvent extends Event
      */
     public function getForm()
     {
-        return $this->arguments['form'];
+        return $this->arguments['errors'];
+    }
+
+    /**
+     * @return ConstraintViolationList
+     */
+    public function getValidator()
+    {
+        return $this->arguments['errors'];
     }
 
     /**
@@ -84,6 +93,23 @@ class ApiExceptionEvent extends Event
                 if (!$child->isValid()) {
                     $errors[$child->getName()] = (String) $form[$child->getName()]->getErrors();
                 }
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * Get errors.
+     * @param ConstraintViolationList $violations
+     *
+     * @return array
+     */
+    public function getValidatorErrors(ConstraintViolationList $violations)
+    {
+        $errors = array();
+        if ($violations->count() > 0) {
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()] =  $violation->getMessage();
             }
         }
         return $errors;

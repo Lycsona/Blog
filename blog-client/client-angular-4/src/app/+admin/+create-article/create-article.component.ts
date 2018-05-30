@@ -129,8 +129,14 @@ export class CreateArticleComponent implements OnInit {
 
         this.appArticleService.saveArticle(this.model)
             .subscribe((res: any) => {
-                //   this.router.navigate(['/']);
-            }, CommonUtil.handleError)
+                  this.router.navigate(['/']);
+            },(err) => {
+              let json = JSON.parse(err._body);
+
+              for(let k in json.errors){
+                this.formErrors[k] =  json.errors[k]
+              }
+            })
     }
 
     private getAllTags() {

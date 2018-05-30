@@ -74,7 +74,9 @@ export class UpdateArticleComponent implements OnInit {
                     this.model.content = jsonArray.content;
                     this.model.image = jsonArray.image;
                     this.model.tags = jsonArray.tags;
-                    this.selectedImage =  'assets/image/' + jsonArray.image;
+                    if(jsonArray.image){
+                      this.selectedImage =  'assets/image/' + jsonArray.image;
+                    }
 
                     this._changeDetectionRef.detectChanges();
                 }, CommonUtil.handleError)
@@ -84,7 +86,8 @@ export class UpdateArticleComponent implements OnInit {
     private buildForm(): void {
         this.formErrors = {
             'name': '',
-            'content': ''
+            'content': '',
+            'image': '',
         };
 
         this.updateArticleForm = this.fb.group({
@@ -97,7 +100,7 @@ export class UpdateArticleComponent implements OnInit {
             ],
             'content': [this.model.content,
                 [
-                    Validators.required,
+                     Validators.maxLength(3000)
                 ]
             ],
             'image': [this.model.image]
@@ -148,9 +151,9 @@ export class UpdateArticleComponent implements OnInit {
   }
 
   public clearFile() {
-    this.updateArticleForm.get('image').setValue(null);
     this.selectedImage = '';
-  }
+    this.model.image = '';
+    }
 
     private getAllTags() {
         this.appTagsService.getAllTags()
@@ -171,7 +174,6 @@ export class UpdateArticleComponent implements OnInit {
 
     public onSubmit() {
         this.model.tags = this.selectedTags;
-        console.log(this.model);
         this.appArticleService.updateArticle(this.model)
             .subscribe((res: any) => {
                 this.router.navigate(['/admin/list-of-articles']);
