@@ -98,9 +98,7 @@ class ArticleServiceImpl implements ArticlesService
         $data['image'] = is_array($data['image']) ? $this->fileUploader->upload($data['image']) : '';
         $data['tags'] = $this->em->getRepository(Tag::class)->findBy(['id' => $data['tags']]);
 
-        $articleDTO = (new ArticleDTO())->build($data);
-
-        $article = ModelFactory::createArticle($articleDTO);
+        $article = ModelFactory::createArticle((new ArticleDTO())->build($data));
 
         $errors = $this->validator->validate($article);
         if (count($errors) > 0) {
@@ -109,7 +107,6 @@ class ArticleServiceImpl implements ArticlesService
 
         $this->em->persist($article);
         $this->em->flush();
-
 
         return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
     }
@@ -121,41 +118,35 @@ class ArticleServiceImpl implements ArticlesService
             return $this->getException(Response::HTTP_NOT_FOUND, AppBlogBundleEvents::GET_ENTITY_ERROR, ['id' => $id]);
         }
 
-        $oldImage = $article->getImage();
-
-        $params = $request->request->all();
-        $tags = $request->request->get('tags');
-        unset($params['tags']);
-
-        $form = $this->formFactory->create(ArticleType::class, $article, array('method' => 'POST'));
-        $form->submit($params);
-        if ($form->isValid()) {
-
-            $article->setUpdatedAt(new \DateTime());
-
-            $newImage = $form->getData()->getImage();
-            if ($newImage && is_array($newImage)) {
-                $this->fileUploader->delete($oldImage);
-                $uploadedFile = $this->fileUploader->upload($newImage);
-                $article->setImage($uploadedFile);
-            }
-
-            $article->removeTags();
-            foreach ($tags as $tag) {
-                $tagEntity = $this->em->getRepository(Tag::class)->findOneBy(['id' => $tag['id']]);
-                $article->addTag($tagEntity);
-            }
-
-            $this->em->persist($article);
-            $this->em->flush();
-
-            $this->cache->deleteArticles();
-            $this->createCacheArticles();
-
-            return JsonResponse::create(['message' => sprintf('Article updated.')], Response::HTTP_OK);
+        $data = $request->request->all();
+        $article->setName($data['name']);
+        $article->setContent($data['content']);
+        $article->setUpdatedAt(new \DateTime());
+        if (!empty($data['tags'])) {
+            $article->setTags($this->em->getRepository(Tag::class)->findBy(['id' => $data['tags']]));
+        }
+        if (is_array($data['image'])) {
+            $this->fileUploader->delete($article->getImage());
+            $uploadedFile = $this->fileUploader->upload($data['image']);
+            $article->setImage($uploadedFile);
+        }
+        if (empty($data['image']) && !empty($article->getImage())) {
+            $this->fileUploader->delete($article->getImage());
+            $article->setImage('');
         }
 
-        return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::UPDATE_ENTITY_ERROR, ['errors' => $form]);
+        $errors = $this->validator->validate($article);
+        if (count($errors) > 0) {
+            return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['errors' => $errors]);
+        }
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->cache->deleteArticles();
+        $this->createCacheArticles();
+
+        return JsonResponse::create(['message' => sprintf('Article updated.')], Response::HTTP_OK);
     }
 
     public function deleteArticle($id)

@@ -8,7 +8,7 @@
     <div class="col-md-8 col-sm-7 pull-left">
         <div class="form-group label-floating row m-b-2">
             <label class="control-label" for="title_input">Title</label>
-            <input class="form-control input-lg" id="title_input" type="text"
+            <input class="input-lg" id="title_input" type="text"
                    [(ngModel)]="model.name"
                    [formControl]="updateArticleForm.controls['name']" required>
             <div *ngIf="formErrors.name" class="form-error color-lightcoral">{{formErrors.name}}</div>
@@ -32,7 +32,7 @@
                 <label for="tags">Tags</label>
                 <select id="tags" multiple="" class="form-control"
                         size="{{tags.length}}" [(ngModel)]="selectedTags">
-                    <option *ngFor="let tag of tags" [ngValue]="tag">
+                    <option *ngFor="let tag of tags" [ngValue]="tag.id">
                         {{tag.name}}
                     </option>
                 </select>
