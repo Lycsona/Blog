@@ -31,8 +31,8 @@
             <div class="row">
                 <label for="tags">Tags</label>
                 <select id="tags" multiple="" class="form-control"
-                        size="{{tags.length}}" [(ngModel)]="selectedTags">
-                    <option *ngFor="let tag of tags" [ngValue]="tag.id">
+                        size="{{tags.length}}" [(ngModel)]="model.tags">
+                    <option *ngFor="let tag of tags" [ngValue]="tag">
                         {{tag.name}}
                     </option>
                 </select>
@@ -44,6 +44,7 @@
                     {{selectedTag.name}}
                 </span>
             </div>
+          <button *ngIf="model.tags.length !== 0" type="button" class="btn btn-md btn-warning" (click)="clearTags()">Clear all tags</button>
         </div>
 
         <!--UPLOAD PIC-->

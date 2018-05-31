@@ -18,7 +18,6 @@ export class UpdateArticleComponent implements OnInit {
 
     private model: ArticleDto;
     private tags: TagDto[];
-    private selectedTags: TagDto[];
     private selectedImage: string;
     private patternNoSpace = /^\S*$/;
     formErrors: any;
@@ -34,7 +33,6 @@ export class UpdateArticleComponent implements OnInit {
         this.meta.addTag({name: 'robots', content: 'noindex'});
         this.model = new ArticleDto();
         this.tags = [];
-        this.selectedTags = [];
         this.selectedImage = "";
     }
 
@@ -155,6 +153,10 @@ export class UpdateArticleComponent implements OnInit {
     this.model.image = '';
     }
 
+  public clearTags() {
+    this.model.tags = [];
+  }
+
     private getAllTags() {
         this.appTagsService.getAllTags()
             .subscribe((res: any) => {
@@ -174,7 +176,6 @@ export class UpdateArticleComponent implements OnInit {
 
     public onSubmit() {
       if(this.updateArticleForm.valid){
-        this.model.tags = this.selectedTags;
         this.appArticleService.updateArticle(this.model)
           .subscribe((res: any) => {
             this.router.navigate(['/admin/list-of-articles']);

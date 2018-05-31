@@ -119,7 +119,12 @@ class ArticleServiceImpl implements ArticlesService
         $article->setContent($data['content']);
         $article->setUpdatedAt(new \DateTime());
         if (!empty($data['tags'])) {
-            $article->setTags($this->em->getRepository(Tag::class)->findBy(['id' => $data['tags']]));
+            $article->setTags($this->em->getRepository(Tag::class)->findBy([
+                'id' => array_map(function ($arr) {return $arr['id'];}, $data['tags'])
+            ]));
+        }
+        if (empty($data['tags']) && !empty($article->getTags())) {
+            $article->removeTags();
         }
         if (is_array($data['image'])) {
             $this->fileUploader->delete($article->getImage());
