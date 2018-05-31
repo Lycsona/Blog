@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
               private appSharedService: AppSharedService,
               private router: Router,
               private fb: FormBuilder) {
-
   };
 
   public ngOnInit() {
@@ -54,12 +53,14 @@ export class LoginComponent implements OnInit {
       'login': [this.login,
         [
           Validators.required,
-          Validators.minLength(6)
+          Validators.minLength(6),
+          Validators.maxLength(12)
         ]
       ],
       'password': [this.password, [
         Validators.required,
-        Validators.minLength(6)
+        Validators.minLength(6),
+        Validators.maxLength(12),
       ]
       ],
     });
