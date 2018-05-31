@@ -7,7 +7,7 @@
         <input type="text" id="login_input"
                [(ngModel)]="login"
                [formControl]="createLoginForm.controls['login']">
-        <div *ngIf="formErrors.login" class="form-error color-lightcoral">{{formErrors.login}}</div>
+        <div *ngIf="formErrors.login" class="form-error text-danger">{{formErrors.login}}</div>
 
       </div>
 
@@ -16,7 +16,7 @@
         <input type="password" id="password_input"
                [(ngModel)]="password"
                [formControl]="createLoginForm.controls['password']">
-        <div *ngIf="formErrors.password" class="form-error color-lightcoral">{{formErrors.password}}</div>
+        <div *ngIf="formErrors.password" class="form-error text-danger">{{formErrors.password}}</div>
 
       </div>
       <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>

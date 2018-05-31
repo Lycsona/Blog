@@ -11,7 +11,7 @@
             <input class="input-lg" id="title_input" type="text"
                    [(ngModel)]="model.name"
                    [formControl]="updateArticleForm.controls['name']" required>
-            <div *ngIf="formErrors.name" class="form-error color-lightcoral">{{formErrors.name}}</div>
+            <div *ngIf="formErrors.name" class="form-error text-danger">{{formErrors.name}}</div>
         </div>
         <div class="row m-b-2 m-t-2">
             <ckeditor
