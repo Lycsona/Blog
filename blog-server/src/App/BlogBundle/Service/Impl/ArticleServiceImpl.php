@@ -27,8 +27,6 @@ class ArticleServiceImpl implements ArticlesService
 
     private $cache;
 
-    private $formFactory;
-
     private $dispatcher;
 
     private $serializer;
