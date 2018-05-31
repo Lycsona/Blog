@@ -2,19 +2,24 @@
   <div class="flex-center">
     <div class="well well-lg float-none row wow fadeIn col-lg-6" data-wow-delay="0.2s">
 
-        <form class="form-group">
-            <label class="control-label" for="login_input">Login</label>
-            <input type="text" id="login_input"
-                   (ngModelChange)="onChange($event, 'login')"
-                   [(ngModel)]="login" name="login">
-        </form>
-        <form class="form-group">
-            <label class="control-label" for="password_input">Password</label>
-            <input type="password" id="password_input"
-                   (ngModelChange)="onChange($event, 'pass')"
-                   [(ngModel)]="password" name="password">
-        </form>
-        <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>
+      <div class="form-group">
+        <label class="control-label" for="login_input">Login</label>
+        <input type="text" id="login_input"
+               [(ngModel)]="login"
+               [formControl]="createLoginForm.controls['login']">
+        <div *ngIf="formErrors.login" class="form-error color-lightcoral">{{formErrors.login}}</div>
+
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="password_input">Password</label>
+        <input type="password" id="password_input"
+               [(ngModel)]="password"
+               [formControl]="createLoginForm.controls['password']">
+        <div *ngIf="formErrors.password" class="form-error color-lightcoral">{{formErrors.password}}</div>
+
+      </div>
+      <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>
     </div>
   </div>
 </div>
