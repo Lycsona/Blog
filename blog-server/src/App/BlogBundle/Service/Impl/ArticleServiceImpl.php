@@ -92,12 +92,14 @@ class ArticleServiceImpl implements ArticlesService
         $data['image'] = is_array($data['image']) ? $this->fileUploader->upload($data['image']) : '';
         $data['tags'] = $this->em->getRepository(Tag::class)->findBy(['id' => $data['tags']]);
 
-        $article = ModelFactory::createArticle((new ArticleDTO())->build($data));
+        $articleDTO = (new ArticleDTO())->build($data);
 
-        $errors = $this->validator->validate($article);
+        $errors = $this->validator->validate($articleDTO);
         if (count($errors) > 0) {
             return $this->getException(Response::HTTP_BAD_REQUEST, AppBlogBundleEvents::CREATE_ENTITY_ERROR, ['errors' => $errors]);
         }
+
+        $article = ModelFactory::createArticle($articleDTO);
 
         $this->em->persist($article);
         $this->em->flush();
@@ -116,23 +118,9 @@ class ArticleServiceImpl implements ArticlesService
         $article->setName($data['name']);
         $article->setContent($data['content']);
         $article->setUpdatedAt(new \DateTime());
-        if (!empty($data['tags'])) {
-            $article->setTags($this->em->getRepository(Tag::class)->findBy([
-                'id' => array_map(function ($arr) {return $arr['id'];}, $data['tags'])
-            ]));
-        }
-        if (empty($data['tags']) && !empty($article->getTags())) {
-            $article->removeTags();
-        }
-        if (is_array($data['image'])) {
-            $this->fileUploader->delete($article->getImage());
-            $uploadedFile = $this->fileUploader->upload($data['image']);
-            $article->setImage($uploadedFile);
-        }
-        if (empty($data['image']) && !empty($article->getImage())) {
-            $this->fileUploader->delete($article->getImage());
-            $article->setImage('');
-        }
+
+        $this->updateArticlesTags($article, $data['tags']);
+        $this->updateArticlesImage($article, $data['image']);
 
         $errors = $this->validator->validate($article);
         if (count($errors) > 0) {
@@ -146,6 +134,33 @@ class ArticleServiceImpl implements ArticlesService
         $this->createCacheArticles();
 
         return JsonResponse::create(['message' => sprintf('Article updated.')], Response::HTTP_OK);
+    }
+
+    private function updateArticlesImage($article, $image)
+    {
+        if (is_array($image)) {
+            $this->fileUploader->delete($article->getImage());
+            $uploadedFile = $this->fileUploader->upload($image);
+            $article->setImage($uploadedFile);
+        }
+        if (empty($image) && !empty($article->getImage())) {
+            $this->fileUploader->delete($article->getImage());
+            $article->setImage('');
+        }
+    }
+
+    private function updateArticlesTags($article, $tags)
+    {
+        if (!empty($tags)) {
+            $article->setTags($this->em->getRepository(Tag::class)->findBy([
+                'id' => array_map(function ($arr) {
+                    return $arr['id'];
+                }, $tags)
+            ]));
+        }
+        if (empty($tags) && !empty($article->getTags())) {
+            $article->removeTags();
+        }
     }
 
     public function deleteArticle($id)
