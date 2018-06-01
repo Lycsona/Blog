@@ -54,11 +54,13 @@ doctrine:
         auto_mapping: true
 
 swiftmailer:
+    spool: { type: memory }
     transport: '%mailer_transport%'
     host: '%mailer_host%'
     username: '%mailer_user%'
     password: '%mailer_password%'
-    spool: { type: memory }
+    port: 2525
+    auth_mode: cram-md5
 
 nelmio_api_doc:
     sandbox:
@@ -113,12 +115,22 @@ old_sound_rabbit_mq:
             connection:       default
             exchange_options: {name: 'page-views', type: direct}
             service_alias:    my_app_service # no alias by default
+        incorrect-login:
+            connection:       default
+            exchange_options: {name: 'incorrect-login', type: direct}
+            service_alias:    my_app_service
     consumers:
         page-views:
             connection:       default
             exchange_options: {name: 'page-views', type: direct}
             queue_options:    {name: 'page-views'}
             callback:         page_views_consumer
+            enable_logger: true
+        incorrect-login:
+            connection:       default
+            exchange_options: {name: 'incorrect-login', type: direct}
+            queue_options:    {name: 'incorrect-login'}
+            callback:         incorrect_login_consumer
             enable_logger: true
 
 fos_rest:

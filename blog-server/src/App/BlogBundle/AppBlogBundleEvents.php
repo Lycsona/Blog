@@ -11,4 +11,5 @@ class AppBlogBundleEvents
     const DELETE_ENTITY_ERROR = 'getEntity';
 
     const PAGE_VIEW_EVENT = 'setIncrementPageViews';
+    const INCORRECT_LOGIN_EVENT = 'sendMailIncorrectLoginAttempts';
 }
