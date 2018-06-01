@@ -105,18 +105,18 @@ export class LoginComponent implements OnInit {
 
       this.appLoginService.login(this.login, this.password)
         .subscribe((res: any) => {
-          let jsonLogin = JSON.parse(res._body);
+          this.changeLoginButton();
 
+          let jsonLogin = JSON.parse(res._body);
           let token = jsonLogin.token;
           let decodedToken = jwtDecode(token);
 
+          localStorage.setItem("mv_token_odsfkgsmkn4nkwkjk2nn3", token);
+
           if (decodedToken.roles.includes('ROLE_ADMIN')) {
-            localStorage.setItem("mv_token_odsfkgsmkn4nkwkjk2nn3", token);
             localStorage.setItem("mv_admin", 'yes');
-            this.changeLoginButton();
             this.router.navigate(['/admin']);
           } else {
-            localStorage.removeItem("mv_admin");
             this.router.navigate(['/home']);
           }
         }, (err) => {
