@@ -55,11 +55,28 @@ services:
               '@page_views'
               ]
 
+    incorrect_login_consumer:
+        class: App\BlogBundle\RabbitMq\Consumer\IncorrectLoginConsumer
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@event_dispatcher'
+              ]
+
     page_views_listener:
         class: App\BlogBundle\EventListener\PageViewsListener
         arguments: [
               '@page_views',
               '@monolog.logger.rabbitmq_log'
+              ]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    incorrect_login_listener:
+        class: App\BlogBundle\EventListener\IncorrectLoginListener
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@mailer',
+              '@templating'
               ]
         tags:
             - { name: kernel.event_subscriber }

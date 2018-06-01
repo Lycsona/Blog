@@ -1,0 +1,7 @@
+{# app/Resources/views/Emails/registration.html.twig #}
+<h3>Incorrect attempts in login form!</h3>
+
+Hi Maria, you've gor incorrect {{ attempts }} attempts in login form!
+
+{# Makes an absolute URL to the /images/logo.png file #}
+<img src="{{ absolute_url(asset('images/logo.png')) }}">

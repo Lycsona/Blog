@@ -3,7 +3,7 @@
 namespace App\BlogBundle\DTO;
 
 use App\BlogBundle\Entity\PageViews;
-use App\BlogBundle\Entity\Tag;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -13,11 +13,14 @@ class ArticleDTO
 {
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, max=100)
      */
     private $name;
 
     /**
      * @var string
+     * @Assert\Length(max=3000)
      */
     private $content;
 

@@ -57,7 +57,7 @@ const APP_PROVIDERS = [
 
 const stompConfig: StompConfig = {
     // Which server?
-    url: 'ws://127.0.0.1:15674/ws',
+    url: 'ws://127.0.0.1:15674/stomp/websocket',
 
     // Headers
     // Typical keys: login, passcode, host
