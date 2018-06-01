@@ -10,7 +10,7 @@
             <label class="control-label" for="title_input">Title</label>
             <input class="input-lg" id="title_input" type="text"
                    [(ngModel)]="model.name"
-                   [formControl]="createArticleForm.controls['name']" required>
+                   [formControl]="createArticleForm.controls['name']">
             <div *ngIf="formErrors.name" class="form-error text-danger">{{formErrors.name}}</div>
         </div>
 

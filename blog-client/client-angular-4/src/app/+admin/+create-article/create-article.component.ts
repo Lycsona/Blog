@@ -32,9 +32,7 @@ export class CreateArticleComponent implements OnInit {
             'minlength': 'Min 2 chars',
             'maxlength': 'Max 128 chars',
         },
-        'content': {
-            'required': 'Required',
-        }
+        'content': {}
     };
 
     constructor(private appArticleService: AppArticleService,
@@ -71,8 +69,8 @@ export class CreateArticleComponent implements OnInit {
                     Validators.maxLength(128)
                 ]
             ],
-            'content': [this.model.content, [Validators.required,]],
-            'image': [this.model.image],
+            'content': [this.model.content, []],
+            'image': [this.model.image, []],
         });
 
         this.createArticleForm.valueChanges
@@ -157,7 +155,6 @@ export class CreateArticleComponent implements OnInit {
     }
 
     onChange(e) {
-
     }
 
     onReady(e) {
