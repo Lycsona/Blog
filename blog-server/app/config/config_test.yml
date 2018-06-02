@@ -21,3 +21,9 @@ doctrine:
 
 framework:
     test: ~
+
+swiftmailer:
+    disable_delivery: true
+    spool:
+        type: file
+        path: %kernel.cache_dir%/email/spool
