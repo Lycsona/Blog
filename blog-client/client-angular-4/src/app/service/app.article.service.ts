@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {apiPrefix, CommonUtil} from '../util/common.util';
 import {ArticleDto} from "../dto/ArticleDto";
 
-const ARTICLE = apiPrefix.concat('/api/articles');
+const ARTICLE = apiPrefix().concat('/api/articles');
 
 @Injectable()
 export class AppArticleService {
@@ -19,9 +19,7 @@ export class AppArticleService {
                 .concat(String(page))
                 .concat('/size/')
                 .concat(String(size)), null)
-            .map((res: Response) => {
-                return res;
-            })
+            .map((res: Response) => res)
             .catch(CommonUtil.handleError);
     }
 
@@ -37,9 +35,7 @@ export class AppArticleService {
     public getArticlesByTag(id: string): Observable<Response> {
         return this.http
             .get(`${ARTICLE}/tag/${id}`, null)
-            .map((res: Response) => {
-                return res;
-            })
+            .map((res: Response) => res)
             .catch(CommonUtil.handleError);
     }
 

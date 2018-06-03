@@ -5,7 +5,7 @@ import {apiPrefix, CommonUtil} from '../util/common.util';
 import {Router} from "@angular/router";
 
 
-const LOGIN = apiPrefix.concat('/api/login_check');
+const LOGIN = apiPrefix().concat('/api/login_check');
 
 @Injectable()
 export class AppLoginService {
@@ -14,7 +14,7 @@ export class AppLoginService {
     }
 
     public login(login: string, password: string): Observable<boolean> {
-        let body = new URLSearchParams();
+        const body = new URLSearchParams();
         body.set('_username', login);
         body.set('_password', password);
 

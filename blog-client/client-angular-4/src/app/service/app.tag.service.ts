@@ -1,10 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {apiPrefix, CommonUtil} from '../util/common.util';
-import {TagDto} from "../dto/TagDto";
+import {Injectable} from "@angular/core";
+import {Http, Response} from "@angular/http";
+import {Observable} from "rxjs";
+import {apiPrefix, CommonUtil} from "../util/common.util";
 
-const TAG = apiPrefix.concat('/api/tags');
+const TAG = apiPrefix().concat('/api/tags');
 
 @Injectable()
 export class AppTagService {
