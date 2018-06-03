@@ -2,18 +2,11 @@
 
 namespace App\BlogBundle\Controller;
 
-use App\BlogBundle\Factory\ModelFactory;
-use App\BlogBundle\Form\ArticleType;
-use App\BlogBundle\DTO\ArticleDTO;
-use App\BlogBundle\Entity\Article;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class ArticleController extends Controller
@@ -29,62 +22,18 @@ class ArticleController extends Controller
      *   }
      * )
      *
-     * @Route("api/articles", name="get_articles")
+     * @Route("api/articles/page/{page}/size/{size}", name="get_articles")
      * @Method("GET")
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getAllArticleAction()
+    public function getAllArticleAction(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $page = $request->get('page');
+        $size = $request->get('size');
 
-        $entities = $entityManager->getRepository(Article::class)->findAll();
-        $articles = $this->get('serializer')->serialize(
-            $entities,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($articles, Response::HTTP_OK);
-    }
-
-    /**
-     * Creates a new Article entity.
-     *
-     * @ApiDoc(
-     *   section="Article",
-     *   resource = true,
-     *   input = {
-     *      "class" = "App\BlogBundle\Form\ArticleType"
-     *   },
-     *   statusCodes = {
-     *     201 = "Returned when successful",
-     *     400 = "Returned when bed request"
-     *   },
-     * )
-     *
-     * @Route("api/articles", name="create_article")
-     * @Method({"POST"})
-     *
-     * @return JsonResponse
-     */
-    public function createArticleAction(Request $request)
-    {
-        $articleDTO = ModelFactory::createArticle(new ArticleDTO());
-
-        $form = $this->createForm(ArticleType::class, $articleDTO);
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($articleDTO);
-            $entityManager->flush();
-
-            return JsonResponse::create(['message' => sprintf('Article created.')], Response::HTTP_CREATED);
-        }
-
-        return JsonResponse::create([
-            'message' => sprintf('Error saving.'),
-            'errors' => $this->getErrorsAsArray($form)
-        ], Response::HTTP_BAD_REQUEST);
+        return $this->get('article')->getArticles($page, $size);
     }
 
     /**
@@ -106,19 +55,33 @@ class ArticleController extends Controller
      */
     public function getArticleByIdAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        return $this->get('article')->getArticleById($id);
+    }
 
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            return $this->nonExistentEntity($id);
-        }
-
-        $entityJson = $this->get('serializer')->serialize(
-            $entity,
-            'json'
-        );
-
-        return JsonResponse::fromJsonString($entityJson, Response::HTTP_OK);
+    /**
+     * Creates a new Article entity.
+     *
+     * @ApiDoc(
+     *   section="Article",
+     *   resource = true,
+     *   input = {
+     *      "class" = "App\BlogBundle\Form\ArticleType"
+     *   },
+     *   statusCodes = {
+     *     201 = "Returned when successful",
+     *     400 = "Returned when bed request"
+     *   },
+     * )
+     *
+     * @Route("api/articles", name="create_article")
+     * @Method({"POST"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function createArticleAction(Request $request)
+    {
+        return $this->get('article')->createArticle($request);
     }
 
     /**
@@ -137,7 +100,7 @@ class ArticleController extends Controller
      *   }
      * )
      *
-     * @Method("PUT")
+     * @Method("POST")
      * @Route("api/articles/{id}", name="edit_article")
      * @param Request $request
      * @param int $id
@@ -146,27 +109,7 @@ class ArticleController extends Controller
      */
     public function editArticleAction(Request $request, $id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            return $this->nonExistentEntity($id);
-        }
-
-        $form = $this->createForm(ArticleType::class, $entity, array('method' => 'PUT'));
-        $form->handleRequest($request);
-        if (!$form->isSubmitted()) {
-            return JsonResponse::create([
-                'message' => sprintf('Error updating.'),
-                'errors' => $this->getErrorsAsArray($form)
-            ], Response::HTTP_BAD_REQUEST);
-        }
-        $entityManager->persist($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Article updated.')],
-            Response::HTTP_OK);
+        return $this->get('article')->editArticle($request, $id);
     }
 
     /**
@@ -189,55 +132,24 @@ class ArticleController extends Controller
      */
     public function deleteArticleAction($id)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Article::class)->find($id);
-        if (!$entity) {
-            return $this->nonExistentEntity($id);
-        }
-
-        $entityManager->remove($entity);
-        $entityManager->flush();
-
-        return JsonResponse::create([
-            'message' => sprintf('Article deleted.'),
-            Response::HTTP_OK]);
-
+        return $this->get('article')->deleteArticle($id);
     }
 
     /**
-     * Entity isn't exist.
+     * Get all articles by tag.
      *
-     * @param $id
+     * @ApiDoc(
+     *   section = "Article",
+     *   resource = true
+     * )
+     *
+     * @Method("GET")
+     * @Route("api/articles/tag/{tag}")
+     * @param $tag
      * @return JsonResponse
      */
-    private function nonExistentEntity($id)
+    public function getArticlesByTagAction($tag)
     {
-        return JsonResponse::create([
-            'messages' => sprintf('There is no Article with id %s', $id),
-            Response::HTTP_NOT_FOUND]);
-    }
-
-    /**
-     * Get error array.
-     *
-     * @param Form $form
-     * @return array
-     */
-    private function getErrorsAsArray(Form $form)
-    {
-        $errors = array();
-
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
-        }
-
-        foreach ($form->all() as $key => $child) {
-            if ($err = $this->getErrorsAsArray($child)) {
-                $errors[$key] = $err;
-            }
-        }
-
-        return $errors;
+        return $this->get('article')->getArticlesByTag($tag);
     }
 }

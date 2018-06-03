@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'Open Sans Bold';
+    src: url('../font/OpenSans-CondBold.ttf');
+}
+
+@font-face {
+    font-family: 'Open Sans Light';
+    src: url('../font/OpenSans-CondLight.ttf');
+}
+
+/* header */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+html, body {
+    margin: 0;
+    height: 120%;
+    font-family: 'Josefin Sans', sans-serif;
+
+}
+
+.header {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+    height: 50vw;
+    min-height: 400px;
+    max-height: 550px;
+    min-width: 300px;
+    color: #eee;
+}
+
+.header:after {
+    content: "";
+    width: 100%;
+    height: 40%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(27, 32, 48, 1) 100%);
+}
+
+.header:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    transform: translateZ(0);
+    background: #1B2030 url(https://unsplash.it/1999/999?image=1063) top center no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    animation: grow 60s linear 10ms infinite;
+    transition: all 0.2s ease-in-out;
+    z-index: -2
+}
+
+.header a {
+    color: #eee
+}
+
+.menu {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    text-decoration: none
+}
+
+.menu:after {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 3px;
+    background: #fff;
+    position: absolute;
+    margin: 0 auto;
+    top: 5px;
+    left: 0;
+    right: 0;
+    box-shadow: 0 8px, 0 16px
+}
+
+.logo {
+    border: 2px solid #fff;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 20px;
+    padding: 5px 10px;
+    font-weight: 600;
+    font-size: 1.2em;
+    box-sizing: border-box
+}
+
+.sides, .info {
+    flex: 0 0 auto;
+    width: 50%
+}
+
+.info {
+    width: 100%;
+    padding: 15% 10% 0 10%;
+    text-align: center;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2)
+}
+
+.author {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: url('../../assets/img/myfoto.jpg') center no-repeat;
+    background-size: cover;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3px
+}
+
+.info h4, .meta {
+    font-size: 0.7em
+}
+
+.meta {
+    font-style: italic;
+}
+
+@keyframes grow {
+    0% {
+        transform: scale(1)
+    }
+    50% {
+        transform: scale(1.2)
+    }
+}
+
+.header-text {
+    color: floralwhite;
+}
+
+/* scroll to top */
+.scrolltop {
+    display: none;
+    width: 100%;
+    margin: 0 auto;
+    position: fixed;
+    bottom: 20px;
+    right: 10px;
+}
+
+.scroll {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background: #b2b2b2;
+    background: rgba(178, 178, 178, 0.7);
+    padding: 20px;
+    text-align: center;
+    margin: 0 0 0 0;
+    cursor: pointer;
+    transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+
+.scroll:hover {
+    background: rgba(178, 178, 178, 1.0);
+    transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+
+.scroll:hover .fa {
+    padding-top: -10px;
+}
+
+.scroll .fa {
+    font-size: 30px;
+    margin-top: -5px;
+    margin-left: 1px;
+    transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+}
+
+.block-list {
+    margin-top: 5%;
+}
+
+/* main */
+
+.main-title {
+    color: #004444;
+}
+
+.content {
+    height: 120px;
+    overflow: hidden;
+    max-height: 140px;
+}
+
+.footer-custom {
+    background-color: #004444;
+    color: antiquewhite;
+    font-family: cursive;
+    max-height: 35px;
+}
+
+/* tags */
+.disable-tag-label-color {
+    background-color: transparent;
+}
+
+.label-tag:hover {
+    color: #919191;
+    transition: color .6s ease-out, background 1s ease-in;
+}
+
+.tag-label-color {
+    color: #bbbbbb;
+}
+
+.cursor-hand {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.container-main {
+    padding-top: 20px;
+}

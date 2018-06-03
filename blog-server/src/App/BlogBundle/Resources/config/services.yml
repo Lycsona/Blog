@@ -1,4 +1,82 @@
 services:
-#    app_blog.example:
-#        class: App\BlogBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+    api_exception_listener:
+        class: App\BlogBundle\EventListener\ApiExceptionListener
+        arguments: []
+        tags:
+            - { name: kernel.event_subscriber }
+
+    redis_connection:
+        class: App\BlogBundle\Service\Impl\RedisConnectionServiceImpl
+
+    cache_redis:
+        class: App\BlogBundle\Service\Impl\CacheServiceImpl
+        arguments: ['@redis_connection']
+
+    paginator:
+        class: App\BlogBundle\Service\Impl\PaginatorServiceImpl
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
+
+    article:
+        class: App\BlogBundle\Service\Impl\ArticleServiceImpl
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@paginator',
+              '@cache_redis',
+              '@event_dispatcher',
+              '@serializer',
+              '@file_uploader',
+              '@validator',
+              ]
+
+    tag:
+        class: App\BlogBundle\Service\Impl\TagServiceImpl
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@form.factory',
+              '@event_dispatcher',
+              '@serializer'
+              ]
+
+    page_views:
+        class: App\BlogBundle\Service\Impl\PageViewsImpl
+        arguments: [
+              '@doctrine.orm.entity_manager',
+              '@serializer',
+              '@old_sound_rabbit_mq.page_views_producer'
+              ]
+
+    page_views_consumer:
+        class: App\BlogBundle\RabbitMq\Consumer\PageViewsConsumer
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@event_dispatcher',
+              '@page_views'
+              ]
+
+    incorrect_login_consumer:
+        class: App\BlogBundle\RabbitMq\Consumer\IncorrectLoginConsumer
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@event_dispatcher'
+              ]
+
+    page_views_listener:
+        class: App\BlogBundle\EventListener\PageViewsListener
+        arguments: [
+              '@page_views',
+              '@monolog.logger.rabbitmq_log'
+              ]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    incorrect_login_listener:
+        class: App\BlogBundle\EventListener\IncorrectLoginListener
+        arguments: [
+              '@monolog.logger.rabbitmq_log',
+              '@mailer',
+              '@templating'
+              ]
+        tags:
+            - { name: kernel.event_subscriber }

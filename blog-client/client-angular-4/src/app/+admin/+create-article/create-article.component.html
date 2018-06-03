@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="row">
+        <button class="btn btn-info" [routerLink]="['/admin']">
+            <i class="fa fa-backward" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="col-md-8 col-sm-8 pull-left">
+        <div class="form-group label-floating row m-b-2">
+            <label class="control-label" for="title_input">Title</label>
+            <input class="input-lg" id="title_input" type="text"
+                   [(ngModel)]="model.name"
+                   [formControl]="createArticleForm.controls['name']">
+            <div *ngIf="formErrors.name" class="form-error text-danger">{{formErrors.name}}</div>
+        </div>
+
+        <div class="form-group">
+            <div *ngIf="!selectedImage">
+                <input class="form-control"
+                       style="display: none"
+                       type="file" (change)="onFileChange($event)" accept=".jpeg,.png"
+                       #fileInput>
+                <button class="btn btn-md btn-info" (click)="fileInput.click()">Select File</button>
+            </div>
+
+            <div *ngIf="selectedImage">
+                <img src="{{selectedImage}}" width="100">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-md btn-warning" (click)="clearFile()">Clear file</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row m-b-2 m-t-2">
+            <ckeditor
+                    [(ngModel)]="model.content"
+                    (change)="onChange($event)"
+                    (ready)="onReady($event)"
+                    (focus)="onFocus($event)"
+                    (blur)="onBlur($event)"
+                    debounce="500">
+            </ckeditor>
+        </div>
+
+        <div class="row">
+            <div class="pull-right">
+                <a (click)="onSubmit()" class="btn btn-raised btn-info">Submit</a>
+            </div>
+        </div>
+    </div>
+
+    <!--tags-->
+    <div class="col-md-3 col-sm-4 pull-right">
+        <div *ngIf="tags.length !== 0">
+            <label class="control-label" for="tags">Tags</label>
+            <select id="tags" multiple="" class="form-control" size="{{tags.length}}" [(ngModel)]="selectedTags">
+                <option *ngFor="let tag of tags" [ngValue]="tag.id">
+                    {{tag.name}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+</div>

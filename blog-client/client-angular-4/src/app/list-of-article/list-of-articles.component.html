@@ -1,0 +1,65 @@
+<div class="container">
+
+    <div *ngIf="articles.length !== 0">
+        <div *ngFor="let key of articles.keys(hash)">
+
+            <!--First row-->
+            <div class="row mt-5 wow fadeIn" data-wow-delay="0.2s">
+                <!--Featured image-->
+                <div class="col-lg-7">
+                    <div class="view overlay hm-white-light z-depth-1-half">
+                        <img src="https://mdbootstrap.com/img/Photos/Slides/img%20(107).jpg" class="img-fluid"
+                             alt="">
+                        <div class="mask"></div>
+                    </div>
+                </div>
+                <!--/.Featured image-->
+
+                <!--Post excerpt-->
+                <div class="col-lg-5">
+                    <div>
+                        <a [routerLink]="['/article', tagUrl]">
+                            <h2 class="post-title font-bold">{{articles[key].art.name}}</h2>
+                        </a>
+
+                        <i class="fa fa-calendar icon-color" aria-hidden="true"></i>
+                        <span class="summary-text-color">
+                                <small> &#160;{{articles[key].art.createdAt | date: 'MMMM dd, yyyy'}}</small>
+                        </span>
+
+                    </div>
+
+                    <p class="my-4 content" [innerHTML]="articles[key].art.content"></p>
+
+                    <div class="read-more">
+                        <a [routerLink]="['/article', articles[key].art.id]" class="btn btn-primary">Learn more</a>
+
+                        <div class="pull-right">
+                               <span *ngFor="let tag of articles[key].art.tags;"
+                                     class="label-tag disable-tag-label-color tag-label-color cursor-hand"
+                                     (click)="refresh()"
+                                     [routerLink]="['/list-of-articles/tag', tag.id]">
+                                   <small *ngIf="tagUrl === tag.id" class="icon-color">
+                                       {{tag.name}}
+                                   </small>
+                                   <small *ngIf="tagUrl !== tag.id">
+                                       {{tag.name}}
+                                   </small>
+                               </span>
+                        </div>
+                    </div>
+
+                </div>
+                <!--/.Post excerpt-->
+            </div>
+            <!--/.First row-->
+        </div>
+    </div>
+    <br>
+    <hr>
+
+    <div *ngIf="articles.length === 0" class="article-block">
+        <h4 class="text-center text-uppercase summary-text-color article-title">Loading...</h4>
+    </div>
+</div>
+
