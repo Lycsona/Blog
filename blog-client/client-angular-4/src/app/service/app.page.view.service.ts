@@ -3,7 +3,7 @@ import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
 import {apiPrefix, CommonUtil} from '../util/common.util';
 
-const PAGE_VIEW = apiPrefix.concat('/api/page-views');
+const PAGE_VIEW = apiPrefix().concat('/api/page-views');
 
 @Injectable()
 export class AppPageViewService {
@@ -12,7 +12,8 @@ export class AppPageViewService {
     }
 
     public incrementPageView(id: string): Observable<Response> {
-        return this.http.post(PAGE_VIEW.concat('/').concat(id), null, CommonUtil.getContentTypeJson())
+        return this.http
+            .post(PAGE_VIEW.concat('/').concat(id), null, CommonUtil.getContentTypeJson())
             .map((res: Response) => {
                 return res;
             })
