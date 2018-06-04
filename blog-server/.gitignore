@@ -18,3 +18,4 @@
 /web/index.php
 .idea
 /composer.lock
+/config/
