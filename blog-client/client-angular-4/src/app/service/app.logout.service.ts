@@ -5,7 +5,7 @@ import {apiPrefix, CommonUtil} from '../util/common.util';
 import {Router} from "@angular/router";
 
 
-const LOGOUT = apiPrefix.concat('/api/logout');
+const LOGOUT = apiPrefix().concat('/api/logout');
 
 @Injectable()
 export class AppLogoutService {

@@ -4,10 +4,11 @@ namespace App\BlogBundle\EventListener;
 
 use App\BlogBundle\AppBlogBundleEvents;
 use App\BlogBundle\Event\IncorrectLoginEvent;
+use Swift_Mailer;
+use Swift_Message;
+use Swift_RfcComplianceException;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Twig\Error\Error;
 
 class IncorrectLoginListener implements EventSubscriberInterface
 {
@@ -19,7 +20,7 @@ class IncorrectLoginListener implements EventSubscriberInterface
 
     public function __construct(
         $logger,
-        \Swift_Mailer $mailer,
+        Swift_Mailer $mailer,
         EngineInterface $templating
     )
     {
@@ -42,7 +43,6 @@ class IncorrectLoginListener implements EventSubscriberInterface
         $this->logger->info('Somebody has been trying login, attempts = ' . $incorrectAttempts);
 
         $body = $this->templating->render(
-        // app/Resources/views/Emails/registration.html.twig
             'Emails/registration.html.twig', ['attempts' => $incorrectAttempts]
         );
 
@@ -51,8 +51,18 @@ class IncorrectLoginListener implements EventSubscriberInterface
             ->setTo('recipient@example.com')
             ->setBody($body, 'text/html');
 
-        $sended = $this->mailer->send($message);
-        $this->logger->info('Sent: ' . $sended);
+        $failedRecipients = [];
 
+        try {
+            $this->mailer->send($message, $failedRecipients);
+        } catch (Swift_RfcComplianceException $e) {
+            $this->logger->critical(
+                sprintf(
+                    'Failed to send email to recipients [%s] with message: %s',
+                    implode(', ', $failedRecipients),
+                    $e->getMessage()
+                )
+            );
+        }
     }
 }

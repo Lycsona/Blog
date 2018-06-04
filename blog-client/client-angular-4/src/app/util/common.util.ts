@@ -1,10 +1,12 @@
 import {Headers, RequestOptions, Response} from "@angular/http";
 import {Observable} from "rxjs";
-import {Router} from "@angular/router";
 import {location} from "ngx-bootstrap/utils/facade/browser";
 
-export const apiPrefix = 'http://host5';
 export const pageTitle = 'Maria Vain';
+
+export const apiPrefix = () => process.env.NODE_ENV === 'production'
+    ? 'http://52.14.210.117:8080'
+    : 'http://blog.loc';
 
 export class CommonUtil {
 

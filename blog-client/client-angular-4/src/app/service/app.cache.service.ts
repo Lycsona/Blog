@@ -3,7 +3,7 @@ import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
 import {apiPrefix, CommonUtil} from '../util/common.util';
 
-const CACHE = apiPrefix.concat('/api/cache');
+const CACHE = apiPrefix().concat('/api/cache');
 
 @Injectable()
 export class AppCacheService {
@@ -12,7 +12,8 @@ export class AppCacheService {
     }
 
     public clearAllCaches(): Observable<Response> {
-        return this.http.post(`${CACHE}`.concat('/clear'), null, CommonUtil.getAuthorizationHeader())
+        return this.http
+            .post(CACHE.concat('/clear'), null, CommonUtil.getAuthorizationHeader())
             .map((res: Response) => {
                 return res;
             })
