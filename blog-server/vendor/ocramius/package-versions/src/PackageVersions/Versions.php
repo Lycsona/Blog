@@ -108,7 +108,7 @@ final class Versions
   'symfony/maker-bundle' => 'v1.5.0@bb0485a3b2eecc561eff735109316677e18fb1d1',
   'symfony/phpunit-bridge' => 'v3.4.11@63cdae00a75862fa543b765ba63d55f6b6397d0c',
   'webmozart/assert' => '1.3.0@0df1908962e7a3071564e857d86874dad1ef204a',
-  'mary/blog' => 'dev-master@573dfedbebdcbd5f5e6e9e7f914d4873dec987c4',
+  'mary/blog' => 'dev-master@60470270c43d51d24361bd7a978a071fba584f5e',
 );
 
     private function __construct()
