@@ -13,6 +13,9 @@
                   [routerLink]="['/list-of-articles/tag', tag.id]">
                 {{tag.name}}
             </span>
+            {{pageIdentifier}}
+            {{pageUrl}}
+            <disqus-thread [page-identifier]="pageIdentifier" [page-url]="pageUrl"></disqus-thread>
         </div>
     </div>
 </div>

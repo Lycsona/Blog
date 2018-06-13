@@ -3,7 +3,7 @@ import {AppArticleService} from "../service/app.article.service";
 import {ActivatedRoute} from "@angular/router";
 import {ArticleDto} from "../dto/ArticleDto";
 import {DOCUMENT} from "@angular/platform-browser";
-import {CommonUtil} from "../util/common.util";
+import {CommonUtil, apiPrefix} from "../util/common.util";
 import {Message} from '@stomp/stompjs';
 import {StompService} from '@stomp/ng2-stompjs';
 
@@ -15,13 +15,14 @@ export class ArticleComponent implements OnInit {
 
     public article: ArticleDto;
     public originalArticle: ArticleDto;
+    public pageUrl: string;
+    public pageIdentifier: string;
     stomp_subscription: any;
 
     constructor(private appArticleService: AppArticleService,
                 private route: ActivatedRoute,
                 private _stompService: StompService,
-                @Inject(DOCUMENT) private document: any
-                ) {
+                @Inject(DOCUMENT) private document: any) {
         this.article = new ArticleDto();
         this.originalArticle = new ArticleDto();
     }
@@ -55,6 +56,9 @@ export class ArticleComponent implements OnInit {
                     this.article.updatedAt = jsonArticle.updatedAt;
                     this.article.tags = jsonArticle.tags;
                     this.article.image = jsonArticle.image;
+
+                    this.pageIdentifier = this.article.id + 'mv';
+                    this.pageUrl = apiPrefix().concat('/api/articles/').concat(this.article.id);
 
                     this.stomp_subscription = this._stompService.publish('/queue/page-views',
                         <string> jsonArticle.id);

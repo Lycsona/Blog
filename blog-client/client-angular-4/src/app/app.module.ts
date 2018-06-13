@@ -49,6 +49,8 @@ import {AppChangeHeaderImgService} from "./service/app.change.header.img.service
 import {AppCacheService} from "./service/app.cache.service";
 import {TooltipModule} from 'ngx-bootstrap';
 
+import { DisqusModule } from 'angular2-disqus';
+
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
@@ -111,7 +113,8 @@ type StoreType = {
         ReactiveFormsModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, {useHash: true, preloadingStrategy: PreloadAllModules}),
-        TooltipModule.forRoot()
+        TooltipModule.forRoot(),
+        DisqusModule,
     ],
     /**
      * Expose our Services and Providers into Angular's dependency injection.
