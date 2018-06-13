@@ -58,7 +58,7 @@ export class ArticleComponent implements OnInit {
                     this.article.image = jsonArticle.image;
 
                     this.pageIdentifier = this.article.id + 'mv';
-                    this.pageUrl = apiPrefix().concat('/api/articles/').concat(this.article.id);
+                    this.pageUrl = apiPrefix().concat('/api/articles/' + this.article.id);
 
                     this.stomp_subscription = this._stompService.publish('/queue/page-views',
                         <string> jsonArticle.id);
